@@ -1,0 +1,27 @@
+{
+    "name": "webcms2/investform-module",
+    "type": "library",
+    "description": "Futurue value of annuity form module, with PDF export.",
+    "keywords": ["webcms2","module"],
+    "homepage": "http://www.webcook.cz/WebCMS2",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tomas Voslar",
+            "email": "tomas.voslar@webcook.cz",
+            "homepage": "http://www.webcook.cz",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+		"webcms2/webcms2": "~0.4"
+    },
+    "autoload": {
+        "classmap": ["/"]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}
