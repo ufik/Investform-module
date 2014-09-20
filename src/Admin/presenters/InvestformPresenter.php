@@ -7,7 +7,9 @@
 
 namespace AdminModule\InvestformModule;
 
+use Nette\Forms\Form;
 use WebCMS\InvestformModule\Common\PdfPrinter;
+use WebCMS\InvestformModule\Entity\Address;
 
 /**
  * Description of
@@ -80,10 +82,18 @@ class InvestformPresenter extends BasePresenter
 
         $postalAddress = $form->addContainer('PostalAddress');
         $postalAddress->addText('name', 'Name:');
-        $postalAddress->addText('lastname', 'Lastname:');
-        $postalAddress->addText('street', 'Street:');
-        $postalAddress->addText('postcode', 'Postcode:');
-        $postalAddress->addText('city', 'City:');
+        $postalAddress->addText('lastname', 'Lastname:')
+            ->addConditionOn($form['PostalAddress']['name'], Form::FILLED)
+            ->addRule(Form::FILLED, 'Lastname is mandatory.');
+        $postalAddress->addText('street', 'Street:')
+            ->addConditionOn($form['PostalAddress']['name'], Form::FILLED)
+            ->addRule(Form::FILLED, 'Street is mandatory.');
+        $postalAddress->addText('postcode', 'Postcode:')
+            ->addConditionOn($form['PostalAddress']['name'], Form::FILLED)
+            ->addRule(Form::FILLED, 'Postcode is mandatory.');
+        $postalAddress->addText('city', 'City:')
+            ->addConditionOn($form['PostalAddress']['name'], Form::FILLED)
+            ->addRule(Form::FILLED, 'City is mandatory.');
 
         if (is_object($this->investment->getAddress())) {
             $address->setDefaults($this->investment->getAddress()->toArray());    
@@ -121,6 +131,13 @@ class InvestformPresenter extends BasePresenter
         $address->setCity($values->Address->city);
 
         $postalAddress = $this->investment->getPostalAddress();
+        if(!is_object($postalAddress)) {
+            $postalAddress = new Address;
+            
+            $this->investment->setPostalAddress($postalAddress);
+            $this->em->persist($postalAddress);
+        }
+
         $postalAddress->setName($values->PostalAddress->name);
         $postalAddress->setLastname($values->PostalAddress->lastname);
         $postalAddress->setStreet($values->PostalAddress->street);
