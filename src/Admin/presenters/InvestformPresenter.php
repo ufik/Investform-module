@@ -85,8 +85,13 @@ class InvestformPresenter extends BasePresenter
         $postalAddress->addText('postcode', 'Postcode:');
         $postalAddress->addText('city', 'City:');
 
-        $address->setDefaults($this->investment->getAddress()->toArray());
-        $postalAddress->setDefaults($this->investment->getPostalAddress()->toArray());
+        if (is_object($this->investment->getAddress())) {
+            $address->setDefaults($this->investment->getAddress()->toArray());    
+        }
+        
+        if (is_object($this->investment->getPostalAddress())) {
+            $postalAddress->setDefaults($this->investment->getPostalAddress()->toArray());
+        }
 
         $form->addSubmit('save', 'Save');
         $form->setDefaults($this->investment->toArray());
