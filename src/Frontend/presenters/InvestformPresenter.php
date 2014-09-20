@@ -185,21 +185,13 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 
 		$mail = new Message;
 		$mail->setFrom('Franta <franta@example.com>')
-		    ->addTo('t.voslar@gmail.com')
+		    ->addTo($investment->getEmail())
 		    ->setSubject('Potvrzení objednávky')
 		    ->setHTMLBody("Dobrý den,\nvaše objednávka byla přijata.");
 
 		$mail->addAttachment('smlouva.pdf', $emailAttachment);
 
 		$mail->send();
-	}
-
-	public function actionPrintPdf()
-	{
-		$html = "<b>ahoj světe!</b>"; // HTML v UTF-8
-
-        // Jako 1. parament PDFResponse můžeme předat html v UTF8 nebo objekt implementující rozhraní ITemplate
-        $this->sendResponse(new \PdfResponse\PdfResponse($html));
 	}
 
 	public function renderDefault($id)

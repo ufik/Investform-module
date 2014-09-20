@@ -28,12 +28,11 @@ class InvestformPresenter extends BasePresenter
     {
         $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Investment");
 
-        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_OUTER);
-        $grid->addFilterDate('created', 'Created');
+        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
+        $grid->addFilterDateRange('created', 'Created');
 
-        $grid->addColumnDate('created', 'Created')
-            ->setSortable()
-            ->setDateFormat(\Grido\Components\Columns\Date::FORMAT_DATETIME);
+        $grid->addColumnDate('created', 'Created', \Grido\Components\Columns\Date::FORMAT_DATETIME)
+            ->setSortable();
         $grid->addColumnNumber('id', 'Contract id')->setSortable();
         $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
             return $item->getAddress()->getName() . ' ' . $item->getAddress()->getLastname();
@@ -46,7 +45,7 @@ class InvestformPresenter extends BasePresenter
         });
 
         $grid->setOperation(array('Download' => 'Download (zip)'), function($operation, $id) {
-            
+
         });
 
         $grid->addActionHref("update", 'Edit')->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax'), 'data-toggle' => 'modal', 'data-target' => '#myModal', 'data-remote' => 'false'));
@@ -54,6 +53,14 @@ class InvestformPresenter extends BasePresenter
         $grid->addActionHref("download", 'Download')->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
 
         return $grid;
+    }
+
+    public function actionDownload($id)
+    {
+        $html = "<b>ahoj světe!</b>"; // HTML v UTF-8
+
+        // Jako 1. parament PDFResponse můžeme předat html v UTF8 nebo objekt implementující rozhraní ITemplate
+        $this->sendResponse(new \PdfResponse\PdfResponse($html));
     }
 
     public function actionDefault($idPage)
