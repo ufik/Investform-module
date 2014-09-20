@@ -1,7 +1,10 @@
 {block content}
 	
-	{include ../tabs.latte active => 'investform'}
-
-	<h1>{$actualPage->getTitle()}</h1>
+	<div class="page-heading">	
+		<h1>{$actualPage->getTitle()}</h1>
+		{include ../tabs.latte active => 'investform'}
+	</div>
 	
+	{control grid}
+
 {/block}

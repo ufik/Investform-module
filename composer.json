@@ -14,7 +14,9 @@
         }
     ],
     "require": {
-		"webcms2/webcms2": "~0.4"
+		"webcms2/webcms2": "~0.4",
+        "jkuchar/pdfresponse": "@dev",
+        "mpdf/mpdf": "5.7.2"
     },
     "autoload": {
         "classmap": ["/"]
