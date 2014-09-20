@@ -11,6 +11,7 @@ use Nette\Forms\Form;
 use WebCMS\InvestformModule\Entity\Investment;
 use WebCMS\InvestformModule\Entity\Address;
 use Nette\Mail\Message;
+use WebCMS\InvestformModule\Common\PdfPrinter;
 
 /**
  * Description of InvestformPresenter
@@ -55,7 +56,7 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 	        ->addRule(Form::FILLED, 'Registration number is mandatory.');
 		$form->addText('investmentAmount', 'Investment amount')
 			->setRequired('Amount of investment is mandatory.');
-		$form->addSelect('investmentLength', 'Investment length', array(3, 5))
+		$form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5))
 			->setRequired('Investment length is mandatory.');
 
 		$form->addSubmit('send', 'Send');
@@ -179,9 +180,8 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 
 	public function sendPdf($investment)
 	{
-		$mpdf = new \mPDF();
-		$mpdf->WriteHTML('<p>Hallo World</p>');
-		$emailAttachment = $mpdf->Output('', 'S');
+		$pdfPrinter = new PdfPrinter($investment);
+		$emailAttachment = $pdfPrinter->printPdf();
 
 		$mail = new Message;
 		$mail->setFrom('Franta <franta@example.com>')

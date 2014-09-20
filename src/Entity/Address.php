@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="investform_Investment")
+ * @ORM\Table(name="investform_Address")
  */
 class Address extends \WebCMS\Entity\Entity
 {

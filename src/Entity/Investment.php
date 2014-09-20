@@ -11,7 +11,7 @@ use Gedmo\Mapping\Annotation as gedmo;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="investform_Address")
+ * @ORM\Table(name="investform_Investment")
  */
 class Investment extends \WebCMS\Entity\Entity
 {
@@ -283,7 +283,7 @@ class Investment extends \WebCMS\Entity\Entity
 
         return $this;
     }
-    
+
     /**
      * Gets the value of created.
      *
