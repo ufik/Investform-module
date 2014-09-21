@@ -54,7 +54,11 @@ class FutureValueOfAnnuityCalculator
 
 	public function getEffectiveEvaluation()
 	{
-		return $this->amount / $this->getPurchaseAmount();
+		if ($this->getPurchaseAmount() > 0) {
+			return $this->amount / $this->getPurchaseAmount();	
+		} else {
+			return 0;
+		}
 	}
 
 	public function getTotalAmount()
