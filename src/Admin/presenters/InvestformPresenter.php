@@ -185,6 +185,7 @@ class InvestformPresenter extends BasePresenter
 
     public function actionDefault($idPage)
     {
+
     }
 
     public function renderDefault($idPage)
