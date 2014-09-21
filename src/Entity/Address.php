@@ -1,7 +1,8 @@
 <?php
 
 /**
- * 
+ * This file is part of the Investform module for webcms2.
+ * Copyright (c) @see LICENSE
  */
 
 namespace WebCMS\InvestformModule\Entity;

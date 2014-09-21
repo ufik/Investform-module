@@ -9,6 +9,7 @@ namespace AdminModule\InvestformModule;
 
 use Nette\Forms\Form;
 use WebCMS\InvestformModule\Common\PdfPrinter;
+use WebCMS\InvestformModule\Common\EmailSender;
 use WebCMS\InvestformModule\Entity\Address;
 
 /**
@@ -55,7 +56,7 @@ class InvestformPresenter extends BasePresenter
         });
 
         $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
 
         return $grid;
@@ -159,6 +160,19 @@ class InvestformPresenter extends BasePresenter
         $this->investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
 
         $this->template->idPage = $idPage;
+    }
+
+    public function actionSend($id, $idPage)
+    {
+        $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
+
+        $emailSender = new EmailSender($this->settings, $investment);
+        $emailSender->send();
+
+        $this->flashMessage('Contract has been sent to the client\'s email address.', 'success');
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     public function actionDownload($id)

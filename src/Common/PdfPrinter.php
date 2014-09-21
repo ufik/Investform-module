@@ -7,6 +7,8 @@
 
 namespace WebCMS\InvestformModule\Common;
 
+use Nette\Templating\FileTemplate;
+
 /**
  * 
  */
@@ -21,7 +23,10 @@ class PdfPrinter
 
 	public function printPdf($response = false)
 	{
-		$html = '<p>Hallo World</p>';
+		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/contract.latte');
+		$template->investment = $this->investment;
+
+		$html = $template->__toString();
 		$mpdf = new \mPDF();
 		$mpdf->WriteHTML($html);
 		

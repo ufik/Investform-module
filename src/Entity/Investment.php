@@ -1,7 +1,8 @@
 <?php
 
 /**
- * 
+ * This file is part of the Investform module for webcms2.
+ * Copyright (c) @see LICENSE
  */
 
 namespace WebCMS\InvestformModule\Entity;
@@ -67,6 +68,11 @@ class Investment extends \WebCMS\Entity\Entity
      * @ORM\Column(type="datetime")
      */
     private $created;
+
+    /**
+     * @ORM\Column(type="text", length=255, nullable=true)
+     */
+    private $hash;
 
     /**
      * Gets the value of phone.
@@ -306,5 +312,15 @@ class Investment extends \WebCMS\Entity\Entity
         $this->created = $created;
 
         return $this;
+    }
+
+    /**
+     * Gets the value of hash.
+     *
+     * @return mixed
+     */
+    public function getHash()
+    {
+        return $this->hash = md5($this->id . $this->created->format('Y-m-d H:i:s'));
     }
 }

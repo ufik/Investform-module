@@ -10,8 +10,8 @@ namespace FrontendModule\InvestformModule;
 use Nette\Forms\Form;
 use WebCMS\InvestformModule\Entity\Investment;
 use WebCMS\InvestformModule\Entity\Address;
-use Nette\Mail\Message;
 use WebCMS\InvestformModule\Common\PdfPrinter;
+use WebCMS\InvestformModule\Common\EmailSender;
 
 /**
  * Description of InvestformPresenter
@@ -102,8 +102,12 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
     	$parameters = $this->getParameter();
     	$parameters = $parameters['parameters'];
 
-    	if (array_key_exists(0, $parameters) && $parameters[0] === 'step2') {
-    		$this->id = $_GET['idI'];
+    	if (array_key_exists(0, $parameters) && $parameters[0] === '2') {
+    		$hash = $parameters[1];
+
+    		$investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findOneByHash($hash);
+    		$this->id = $investment->getId();
+
     		$this->template->setFile(APP_DIR . '/templates/investform-module/Investform/step2.latte');
     	} else if(array_key_exists(0, $parameters) && $parameters[0] === 'final') {
     		$this->template->setFile(APP_DIR . '/templates/investform-module/Investform/final.latte');
@@ -137,12 +141,15 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 		$this->em->persist($investment);
 		$this->em->flush();
 
+		$investment->getHash();
+		$this->em->flush();
+
 		$this->redirect('default', array(
-			'idI' => $investment->getId(),
 			'path' => $this->actualPage->getPath(),
 			'abbr' => $this->abbr,
 			'parameters' => array(
-				'step2'
+				'2',
+				'hash' => $investment->getHash()
 			)
 		));
 	}
@@ -180,18 +187,8 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 
 	public function sendPdf($investment)
 	{
-		$pdfPrinter = new PdfPrinter($investment);
-		$emailAttachment = $pdfPrinter->printPdf();
-
-		$mail = new Message;
-		$mail->setFrom('Franta <franta@example.com>')
-		    ->addTo($investment->getEmail())
-		    ->setSubject('Potvrzení objednávky')
-		    ->setHTMLBody("Dobrý den,\nvaše objednávka byla přijata.");
-
-		$mail->addAttachment('smlouva.pdf', $emailAttachment);
-
-		$mail->send();
+		$emailSender = new EmailSender($this->settings, $investment);
+		$emailSender->send();
 	}
 
 	public function renderDefault($id)
