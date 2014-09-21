@@ -51,10 +51,6 @@ class InvestformPresenter extends BasePresenter
             return $item->getBirthdateNumber() ? 'Sent' : 'Not sent';
         });
 
-        $grid->setOperation(array('Download' => 'Download (zip)'), function($operation, $id) {
-
-        });
-
         $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
