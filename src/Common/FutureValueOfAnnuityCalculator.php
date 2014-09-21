@@ -35,11 +35,8 @@ class FutureValueOfAnnuityCalculator
 
 	public function getProfit()
 	{
-		$periods = $this->length * 365;
-		$periodicPaymentAmount = $this->amount / $periods;
-		$rate = pow(1 + $this->rate->getRate(), 1 / 365) - 1;
-
-		return $periodicPaymentAmount * ( ( pow(( 1 + $rate ), $periods) -1 ) / $rate ) - $this->amount;
+		$rate = 1 + $this->rate->getRate();
+		return $this->amount * pow($rate, $this->length) - $this->amount;
 	}
 
 	public function getTotalProfit()
