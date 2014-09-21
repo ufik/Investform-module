@@ -33,12 +33,17 @@ class Investform extends \WebCMS\Module
     protected $presenters = array(
 		array(
 		    'name' => 'Investform',
-		    'frontend' => TRUE,
-		    'parameters' => TRUE
+		    'frontend' => true,
+		    'parameters' => true
 		),
+        array(
+            'name' => 'Calculator',
+            'frontend' => true,
+            'parameters' => false
+        ),
 		array(
 		    'name' => 'Settings',
-		    'frontend' => FALSE
+		    'frontend' => false
 		)
     );
 
