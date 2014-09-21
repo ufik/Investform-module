@@ -185,6 +185,14 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 		));
 	}
 
+	public function handlegetNetIncome($amount, $length)
+	{
+		$fvoa = new \WebCMS\InvestformModule\Common\FutureValueOfAnnuityCalculator($amount, $length);
+
+		$this->payload->profit = \WebCMS\Helpers\SystemHelper::price($fvoa->getTotalProfit());
+		$this->sendPayload();
+	}
+
 	public function sendPdf($investment)
 	{
 		$emailSender = new EmailSender($this->settings, $investment);
