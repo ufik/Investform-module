@@ -68,6 +68,7 @@ class InvestformPresenter extends BasePresenter
         $form->addText('company', 'Company');
         $form->addText('registrationNumber', 'Registration number');
         $form->addText('investment', 'Investment amount');
+        $form->addText('bankAccount', 'Bank account');
         $form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5));
 
         $address = $form->addContainer('Address');
@@ -116,6 +117,7 @@ class InvestformPresenter extends BasePresenter
         $this->investment->setEmail($values->email);
         $this->investment->setBirthdateNumber($values->birthdateNumber);
         $this->investment->setCompany($values->company);
+        $this->investment->setBankAccount($values->bankAccount);
         $this->investment->setRegistrationNumber($values->registrationNumber);
         $this->investment->setInvestment($values->investment);
         $this->investment->setInvestmentLength($values->investmentLength);

@@ -54,6 +54,8 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 		$form->addText('registrationNumber', 'Registration number')
 			->addConditionOn($form['invest'], Form::EQUAL, true)
 	        ->addRule(Form::FILLED, 'Registration number is mandatory.');
+		$form->addText('bankAccount', 'Bank account')
+			->setRequired('Bank account is mandatory.');
 		$form->addText('investmentAmount', 'Investment amount')
 			->setRequired('Amount of investment is mandatory.');
 		$form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5))
@@ -137,6 +139,7 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 		$investment->setRegistrationNumber($values->registrationNumber);
 		$investment->setCompany($values->company);
 		$investment->setAddress($address);
+		$investment->setBankAccount($values->bankAccount);
 
 		$this->em->persist($investment);
 		$this->em->flush();

@@ -41,6 +41,11 @@ class Investment extends \WebCMS\Entity\Entity
 	 */
 	private $registrationNumber;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $bankAccount;
+
 	/**
 	 * @ORM\Column(type="decimal", scale=2)
 	 */
@@ -322,5 +327,29 @@ class Investment extends \WebCMS\Entity\Entity
     public function getHash()
     {
         return $this->hash = md5($this->id . $this->created->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * Gets the value of bankAccount.
+     *
+     * @return mixed
+     */
+    public function getBankAccount()
+    {
+        return $this->bankAccount;
+    }
+
+    /**
+     * Sets the value of bankAccount.
+     *
+     * @param mixed $bankAccount the bank account
+     *
+     * @return self
+     */
+    public function setBankAccount($bankAccount)
+    {
+        $this->bankAccount = $bankAccount;
+
+        return $this;
     }
 }
