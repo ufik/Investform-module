@@ -34,7 +34,7 @@ class CalculatorPresenter extends \FrontendModule\BasePresenter
 	{
 		$form = $this->createForm('form-submit');
 
-		$form->addText('amount', 'Amount')
+		$form->addSelect('amount', 'Amount', range(100000, 2000000, 100000))
 			->setAttribute('placeholder', 'Type investement amount');
 		$form->addSelect('length', 'Length', array(3 => 3, 5 => 5));
 
