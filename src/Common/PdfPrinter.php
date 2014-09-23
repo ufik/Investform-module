@@ -23,8 +23,13 @@ class PdfPrinter
 
 	public function printPdf($response = false)
 	{
+		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
+		
 		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/contract.latte');
+		$template->registerHelperLoader('Nette\Templating\Helpers::loader');
+                $template->registerFilter(new \Nette\Latte\Engine);
 		$template->investment = $this->investment;
+		$template->fvoa = $fvoa;
 
 		$html = $template->__toString();
 		$mpdf = new \mPDF();
