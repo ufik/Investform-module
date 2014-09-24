@@ -27,6 +27,7 @@ class PdfPrinter
 		
 		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/contract.latte');
 		$template->registerHelperLoader('Nette\Templating\Helpers::loader');
+		$template->registerHelperLoader('\WebCMS\Helpers\SystemHelper::loader');
                 $template->registerFilter(new \Nette\Latte\Engine);
 		$template->investment = $this->investment;
 		$template->fvoa = $fvoa;
