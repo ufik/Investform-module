@@ -18,7 +18,7 @@ use WebCMS\InvestformModule\Common\EmailSender;
  *
  * @author Tomas Voslar <tomas.voslar@webcook.cz>
  */
-class InvestformPresenter extends \FrontendModule\BasePresenter
+class InvestformPresenter extends BasePresenter
 {
 	private $id;
 	
@@ -56,7 +56,7 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 	        ->addRule(Form::FILLED, 'Registration number is mandatory.');
 		$form->addText('bankAccount', 'Bank account')
 			->setRequired('Bank account is mandatory.');
-		$form->addText('investmentAmount', 'Investment amount')
+		$form->addSelect('investmentAmount', 'Investment amount', $this->amountItems)
 			->setRequired('Amount of investment is mandatory.');
 		$form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5))
 			->setRequired('Investment length is mandatory.');
@@ -72,7 +72,9 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 	{
 		$form = $this->createForm('step2Form-submit', 'default', null);
 
-		$form->addText('birthdateNumber', 'Birthdate number')->setRequired('Birthdate number is mandatory.');
+		$form->addText('birthdateNumber', 'Birthdate number')
+			->setRequired('Birthdate number is mandatory.')
+			->addRule(Form::REGEXP, "Birthdate can contain just numbers.", '/^[0-9\/]+$/');
 		$form->addCheckbox('postalAddress', 'Postal address');
 		$form->addText('name', 'Name')
 			->addConditionOn($form['postalAddress'], Form::EQUAL, true)
@@ -192,7 +194,7 @@ class InvestformPresenter extends \FrontendModule\BasePresenter
 	{
 		$fvoa = new \WebCMS\InvestformModule\Common\FutureValueOfAnnuityCalculator($amount, $length);
 
-		$this->payload->profit = \WebCMS\Helpers\SystemHelper::price($fvoa->getTotalProfit());
+		$this->payload->profit = \WebCMS\Helpers\SystemHelper::price($fvoa->getTotalProfit(), '%.0n');
 		$this->sendPayload();
 	}
 

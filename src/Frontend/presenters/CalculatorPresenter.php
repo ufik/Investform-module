@@ -14,15 +14,19 @@ use WebCMS\InvestformModule\Common\FutureValueOfAnnuityCalculator;
  *
  * @author Tomas Voslar <tomas.voslar@webcook.cz>
  */
-class CalculatorPresenter extends \FrontendModule\BasePresenter
+class CalculatorPresenter extends BasePresenter
 {
 	private $id;
 
 	private $fvoa;
-	
+
 	protected function startup() 
     {
 		parent::startup();
+
+		foreach(range(200000, 3000000, 100000) as $number) {
+			$amountItems[$number] = \WebCMS\Helpers\SystemHelper::price($number);
+		}
 	}
 
 	protected function beforeRender()
@@ -34,12 +38,7 @@ class CalculatorPresenter extends \FrontendModule\BasePresenter
 	{
 		$form = $this->createForm('form-submit');
 
-		$amountItems = array();
-		foreach(range(100000, 2000000, 100000) as $number) {
-			$amountItems[$number] = $number;
-		}
-
-		$form->addSelect('amount', 'Amount', $amountItems)
+		$form->addSelect('amount', 'Amount', $this->amountItems)
 			->setAttribute('placeholder', 'Type investement amount');
 		$form->addSelect('length', 'Length', array(3 => 3, 5 => 5));
 
