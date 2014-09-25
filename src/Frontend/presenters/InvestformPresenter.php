@@ -70,11 +70,15 @@ class InvestformPresenter extends BasePresenter
 
 	public function createComponentStep2Form($name)
 	{
-		$form = $this->createForm('step2Form-submit', 'default', null);
+		$parameters = $this->getParameter('parameters');
+		$form = $this->createForm('step2Form-submit', 'default', null, array(
+			'2',
+			'hash' => $parameters[1]
+		));
 
 		$form->addText('birthdateNumber', 'Birthdate number')
 			->setRequired('Birthdate number is mandatory.')
-			->addRule(Form::REGEXP, "Birthdate can contain just numbers.", '/^[0-9\/]+$/');
+			->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
 		$form->addCheckbox('postalAddress', 'Postal address');
 		$form->addText('name', 'Name')
 			->addConditionOn($form['postalAddress'], Form::EQUAL, true)
@@ -99,6 +103,39 @@ class InvestformPresenter extends BasePresenter
 		$form->onSuccess[] = callback($this, 'step2formSubmitted');
 
 		return $form;
+	}
+
+	public function validateBirthdateNumber($control)
+	{
+		$rc = $control->getValue();
+
+	    if (!preg_match('#^\s*(\d\d)(\d\d)(\d\d)[ /]*(\d\d\d)(\d?)\s*$#', $rc, $matches)) {
+	        return false;
+	    }
+
+	    list(, $year, $month, $day, $ext, $c) = $matches;
+
+	    if ($c === '') {
+	        return $year < 54;
+	    }
+
+	    $mod = ($year . $month . $day . $ext) % 11;
+	    if ($mod === 10) $mod = 0;
+	    if ($mod !== (int) $c) {
+	        return false;
+	    }
+
+	    $year += $year < 54 ? 2000 : 1900;
+
+	    if ($month > 70 && $year > 2003) $month -= 70;
+	    elseif ($month > 50) $month -= 50;
+	    elseif ($month > 20 && $year > 2003) $month -= 20;
+
+	    if (!checkdate($month, $day, $year)) {
+	        return false;
+	    }
+
+	    return true;
 	}
 
 	public function actionDefault($id)
