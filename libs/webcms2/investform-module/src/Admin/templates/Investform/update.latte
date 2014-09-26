@@ -1,0 +1,100 @@
+{block content}
+	
+	<div class="page-heading">	
+		<h1>{$actualPage->getTitle()}</h1>
+		{include ../tabs.latte active => 'investform'}
+	</div>
+	
+	{form form class => 'ajax'}
+		<div class="row">
+	        <div class="col-md-4">
+	        	<h2>{_'Contract info'}</h2>
+	        	<div class="form-group">
+	        		{label phone /}
+	        		{input phone class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label email /}
+	        		{input email class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label birthdateNumber /}
+	        		{input birthdateNumber class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label company /}
+	        		{input company class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label registrationNumber /}
+	        		{input registrationNumber class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label bankAccount /}
+	        		{input bankAccount class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label investment /}
+	        		{input investment class => 'form-control'}
+	        	</div>
+	        	<div class="form-group">
+	        		{label investmentLength /}
+	        		{input investmentLength class => 'form-control'}
+	        	</div>
+	        </div>
+	        <div class="col-md-4">
+	        	<h2>{_'Address'}</h2>
+		        {formContainer Address}
+		        	<div class="form-group">
+		        		{label name /}
+		        		{input name class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label lastname /}
+		        		{input lastname class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label street /}
+		        		{input street class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label postcode /}
+		        		{input postcode class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label city /}
+		        		{input city class => 'form-control'}
+		        	</div>
+		        {/formContainer}
+	        </div>
+	        <div class="col-md-4">
+	        	<h2>{_'Postal address'}</h2>
+		        {formContainer PostalAddress}
+		        	<div class="form-group">
+		        		{label name /}
+		        		{input name class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label lastname /}
+		        		{input lastname class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label street /}
+		        		{input street class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label postcode /}
+		        		{input postcode class => 'form-control'}
+		        	</div>
+		        	<div class="form-group">
+		        		{label city /}
+		        		{input city class => 'form-control'}
+		        	</div>
+		        {/formContainer}
+	        </div>
+	    </div>
+
+	    {input save class => 'btn btn-success'}
+	{/form}
+
+{/block}
