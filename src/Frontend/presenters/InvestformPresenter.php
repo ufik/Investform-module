@@ -180,6 +180,8 @@ class InvestformPresenter extends BasePresenter
 		$investment->setAddress($address);
 		$investment->setBankAccount($values->bankAccount);
 
+		$this->sendPdf($investment, 'form');
+
 		$this->em->persist($investment);
 		$this->em->flush();
 
@@ -215,7 +217,7 @@ class InvestformPresenter extends BasePresenter
 			$investment->setPostalAddress($address);
 		}
 
-		$this->sendPdf($investment, 'form');
+		$this->sendPdf($investment, 'contract');
 		$this->em->flush();
 
 		$this->redirect('default', array(
