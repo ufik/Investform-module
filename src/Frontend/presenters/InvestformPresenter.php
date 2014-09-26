@@ -215,7 +215,7 @@ class InvestformPresenter extends BasePresenter
 			$investment->setPostalAddress($address);
 		}
 
-		$this->sendPdf($investment);
+		$this->sendPdf($investment, 'form');
 		$this->em->flush();
 
 		$this->redirect('default', array(
@@ -235,9 +235,9 @@ class InvestformPresenter extends BasePresenter
 		$this->sendPayload();
 	}
 
-	public function sendPdf($investment)
+	public function sendPdf($investment, $type)
 	{
-		$emailSender = new EmailSender($this->settings, $investment);
+		$emailSender = new EmailSender($this->settings, $investment, $type);
 		$emailSender->send();
 	}
 

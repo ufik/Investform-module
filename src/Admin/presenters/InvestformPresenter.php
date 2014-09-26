@@ -164,7 +164,7 @@ class InvestformPresenter extends BasePresenter
     {
         $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
 
-        $emailSender = new EmailSender($this->settings, $investment);
+        $emailSender = new EmailSender($this->settings, $investment, 'contract');
         $emailSender->send();
 
         $this->flashMessage('Contract has been sent to the client\'s email address.', 'success');
@@ -178,7 +178,7 @@ class InvestformPresenter extends BasePresenter
         $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
         $pdfPrinter = new PdfPrinter($investment);
 
-        $this->sendResponse($pdfPrinter->printPdf(true));
+        $this->sendResponse($pdfPrinter->printPdfContract(true));
     }
 
     public function actionDefault($idPage)
