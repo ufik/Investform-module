@@ -39,7 +39,7 @@ class EmailSender
 		    ->setSubject($this->settings->get(ucfirst($this->type).' Subject', 'InvestformModule', 'text')->getValue())
 		    ->setHTMLBody($this->settings->get(ucfirst($this->type).' Email body', 'InvestformModule', 'textarea')->getValue());
 
-		$mail->addAttachment($this->type.'pdf', $emailAttachment);
+		$mail->addAttachment($this->type.'.pdf', $emailAttachment);
 
 		$mail->send();
 	}
