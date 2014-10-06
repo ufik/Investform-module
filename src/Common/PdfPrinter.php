@@ -21,25 +21,49 @@ class PdfPrinter
 		$this->investment = $investment;
 	}
 
-	public function printPdf($response = false)
+	public function printPdfForm($response = false)
 	{
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
 		
-		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/contract.latte');
-		$template->registerHelperLoader('Nette\Templating\Helpers::loader');
-                $template->registerFilter(new \Nette\Latte\Engine);
-		$template->investment = $this->investment;
-		$template->fvoa = $fvoa;
-
-		$html = $template->__toString();
-		$mpdf = new \mPDF();
-		$mpdf->WriteHTML($html);
+		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/form.latte');
 		
+		$template_path = APP_DIR . '/../zajistenainvestice-kalkulace_form-new-font.pdf';
+		$output_path = WWW_DIR . '/example.pdf';
+		$field_data = array(
+		    "name" => $this->investment->getAddress()->getName()
+		);
+
+		$this->processPdf($response, $output_path);
+	}
+
+	public function printPdfContract($response = false)
+	{
+		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
+		
+		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace_form-new-font.pdf';
+		$outputPath = WWW_DIR . '/example.pdf';
+		$fieldData = array(
+		    "name" => $this->investment->getAddress()->getName()
+		);
+
+		\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
+
+		$this->processPdf($response, $outputPath);
+	}
+
+	private function processPdf($response, $pdfPath)
+	{
 		if ($response) {
-			return new \PdfResponse\PdfResponse($html);	
+			header('Content-type: application/pdf');
+			header('Content-Disposition: inline; filename="smlouva.pdf"');
+			header('Content-Transfer-Encoding: binary');
+			header('Content-Length: ' . filesize($pdfPath));
+			header('Accept-Ranges: bytes');
+
+			@readfile($pdfPath);
+			die();
 		} else {
-			$output = $mpdf->Output('', 'S');
-			return $output;
+			return file_get_contents($pdfPath);
 		}
 	}
 }
