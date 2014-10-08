@@ -27,7 +27,7 @@ class PdfPrinter
 		
 		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/form.latte');
 		
-		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace_form.pdf';
+		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace.pdf';
 		$fieldData = array(
 		    "name" => $this->investment->getAddress()->getName()
 		);
@@ -42,7 +42,7 @@ class PdfPrinter
 	{
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
 		
-		$templatePath = APP_DIR . '/../zajistenainvestice-smlouva_3lety-dluhopis.pdf';
+		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis.pdf";
 		$fieldData = array(
 		    "name" => $this->investment->getAddress()->getName()
 		);
