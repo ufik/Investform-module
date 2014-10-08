@@ -32,7 +32,7 @@ class EmailSender
 	{
 		$pdfPrinter = new PdfPrinter($this->investment);
 		$emailAttachment = $this->type == 'form' ? $pdfPrinter->printPdfForm() : $pdfPrinter->printPdfContract();
-
+		
 		$mail = new Message;
 		$mail->setFrom($this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue())
 		    ->addTo($this->investment->getEmail())

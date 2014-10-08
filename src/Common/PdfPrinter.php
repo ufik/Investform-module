@@ -27,28 +27,30 @@ class PdfPrinter
 		
 		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/form.latte');
 		
-		$template_path = APP_DIR . '/../zajistenainvestice-kalkulace_form-new-font.pdf';
-		$output_path = WWW_DIR . '/example.pdf';
-		$field_data = array(
+		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace_form.pdf';
+		$fieldData = array(
 		    "name" => $this->investment->getAddress()->getName()
 		);
 
-		$this->processPdf($response, $output_path);
+		$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
+		\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
+
+		return $this->processPdf($response, $outputPath);
 	}
 
 	public function printPdfContract($response = false)
 	{
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
 		
-		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace_form-new-font.pdf';
-		$outputPath = WWW_DIR . '/example.pdf';
+		$templatePath = APP_DIR . '/../zajistenainvestice-smlouva_3lety-dluhopis.pdf';
 		$fieldData = array(
 		    "name" => $this->investment->getAddress()->getName()
 		);
 
+		$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
 		\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
 
-		$this->processPdf($response, $outputPath);
+		return $this->processPdf($response, $outputPath);
 	}
 
 	private function processPdf($response, $pdfPath)
@@ -61,9 +63,17 @@ class PdfPrinter
 			header('Accept-Ranges: bytes');
 
 			@readfile($pdfPath);
+
+			unlink($pdfPath);
 			die();
 		} else {
-			return file_get_contents($pdfPath);
+			ob_start();
+			@readfile($pdfPath);
+			$pdf = ob_get_contents();
+			ob_clean();
+
+			unlink($pdfPath);
+			return $pdf;
 		}
 	}
 }

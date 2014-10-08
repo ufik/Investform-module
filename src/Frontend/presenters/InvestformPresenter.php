@@ -55,7 +55,8 @@ class InvestformPresenter extends BasePresenter
 			->addConditionOn($form['invest'], Form::EQUAL, true)
 	        ->addRule(Form::FILLED, 'Registration number is mandatory.');
 		$form->addText('bankAccount', 'Bank account')
-			->setRequired('Bank account is mandatory.');
+			->setRequired('Bank account is mandatory.')
+			->addRule(callback($this, 'validateBankAccount'), "Bank acccount is not valid`.");
 		$form->addSelect('investmentAmount', 'Investment amount', $this->amountItems)
 			->setRequired('Amount of investment is mandatory.');
 		$form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5))
@@ -136,6 +137,48 @@ class InvestformPresenter extends BasePresenter
 	    }
 
 	    return true;
+	}
+
+	public function validateBankAccount($control)
+	{
+		$number = $control->getValue();
+
+		$parts = explode('/', $number);
+		$baNumber = $parts[0];
+
+		$parts = explode('-', $baNumber);
+
+		foreach ($parts as $part) {
+			if (!$this->validatePart($part)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 *    A  B C D  E  F G H I J
+	 * _________________________
+	 * s  6  3 7 9  10 5 8 4 2 1
+	 * n  10 9 8 7  6  5 4 3 2 1
+	 * 
+	 * S = J *1 I *2 H *4 G *8 F*5 E *10 D*9 C*7 B*3 A *6
+	 * 
+	 * @param  [type] $part [description]
+	 * @return [type]       [description]
+	 */
+	private function validatePart($part)
+	{
+		$scales = array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
+		$toValidate = array_reverse(str_split($part));
+
+		$controlSum = 0;
+		for ($i=0; $i < count($toValidate); $i++) { 
+			$controlSum += $toValidate[$i] * $scales[$i];
+		}
+		
+		return $controlSum % 11 === 0;
 	}
 
 	public function actionDefault($id)
