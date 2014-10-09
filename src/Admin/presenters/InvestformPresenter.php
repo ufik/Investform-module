@@ -41,6 +41,7 @@ class InvestformPresenter extends BasePresenter
         $grid->addColumnDate('created', 'Created', \Grido\Components\Columns\Date::FORMAT_DATETIME)
             ->setSortable();
         $grid->addColumnNumber('id', 'Contract id')->setSortable();
+        $grid->addColumnText('pin', 'Pin')->setSortable();
         $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
             return $item->getAddress()->getName() . ' ' . $item->getAddress()->getLastname();
         });
@@ -70,6 +71,7 @@ class InvestformPresenter extends BasePresenter
         $form->addText('investment', 'Investment amount');
         $form->addText('bankAccount', 'Bank account');
         $form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5));
+        $form->addText('pin', 'Pin');
 
         $address = $form->addContainer('Address');
         $address->addText('name', 'Name:');
@@ -117,6 +119,7 @@ class InvestformPresenter extends BasePresenter
         $this->investment->setEmail($values->email);
         $this->investment->setBirthdateNumber($values->birthdateNumber);
         $this->investment->setCompany($values->company);
+        $this->investment->setPin($values->pin);
         $this->investment->setBankAccount($values->bankAccount);
         $this->investment->setRegistrationNumber($values->registrationNumber);
         $this->investment->setInvestment($values->investment);

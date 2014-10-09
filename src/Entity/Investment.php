@@ -80,6 +80,11 @@ class Investment extends \WebCMS\Entity\Entity
     private $hash;
 
     /**
+     * @ORM\Column(type="text", length=255, nullable=true)
+     */
+    private $pin;
+
+    /**
      * Gets the value of phone.
      *
      * @return mixed
@@ -349,6 +354,30 @@ class Investment extends \WebCMS\Entity\Entity
     public function setBankAccount($bankAccount)
     {
         $this->bankAccount = $bankAccount;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of pin.
+     *
+     * @return mixed
+     */
+    public function getPin()
+    {
+        return $this->pin;
+    }
+
+    /**
+     * Sets the value of pin.
+     *
+     * @param mixed $pin the pin
+     *
+     * @return self
+     */
+    public function setPin($pin)
+    {
+        $this->pin = $pin;
 
         return $this;
     }

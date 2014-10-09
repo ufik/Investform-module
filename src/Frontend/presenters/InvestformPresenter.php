@@ -12,6 +12,7 @@ use WebCMS\InvestformModule\Entity\Investment;
 use WebCMS\InvestformModule\Entity\Address;
 use WebCMS\InvestformModule\Common\PdfPrinter;
 use WebCMS\InvestformModule\Common\EmailSender;
+use Nette\Mail\Message;
 
 /**
  * Description of InvestformPresenter
@@ -80,6 +81,7 @@ class InvestformPresenter extends BasePresenter
 		$form->addText('birthdateNumber', 'Birthdate number')
 			->setRequired('Birthdate number is mandatory.')
 			->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
+		$form->addText('pin', 'Pin number');
 		$form->addCheckbox('postalAddress', 'Postal address');
 		$form->addText('name', 'Name')
 			->addConditionOn($form['postalAddress'], Form::EQUAL, true)
@@ -231,6 +233,17 @@ class InvestformPresenter extends BasePresenter
 		$investment->getHash();
 		$this->em->flush();
 
+		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
+		if (!empty($infoEmail)) {
+			$mail = new Message;
+			$mail->setFrom($infoEmail)
+			    ->addTo($infoEmail)
+			    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
+			    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
+
+			$mail->send();
+		}
+
 		$this->redirect('default', array(
 			'path' => $this->actualPage->getPath(),
 			'abbr' => $this->abbr,
@@ -246,6 +259,7 @@ class InvestformPresenter extends BasePresenter
 		$values = $form->getValues();
 		$investment = $this->em->getRepository('WebCMS\InvestformModule\Entity\Investment')->find($values->idUser);
 		$investment->setBirthdateNumber($values->birthdateNumber);
+		$investment->setPin($values->pin);
 
 		if ($values->postalAddress) {
 			$address = new Address;

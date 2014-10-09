@@ -159,4 +159,13 @@ class Address extends \WebCMS\Entity\Entity
 
         return $this;
     }
+
+    public function getAddressString()
+    {
+        if (!empty($this->street)) {
+            return $this->street . ', ' . $this->getCity() . ' ' . $this->getPostcode();    
+        } else {
+            return '-';
+        }
+    }
 }
