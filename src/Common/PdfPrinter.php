@@ -52,7 +52,7 @@ class PdfPrinter
 		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getAddressString() : '-');
 
 		$fieldData = array(
-		    'name' => $this->investment->getAddress()->getName(),
+		    'name' => $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname(),
 		    'identificationNumber' => $bNumber,
 		    'address' => $this->investment->getAddress()->getAddressString(),
 		    'mailingAddress' => $postalAddress,
