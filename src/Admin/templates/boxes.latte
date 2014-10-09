@@ -2,6 +2,7 @@
 	
 	{include tabs.latte active => 'boxes'}
 	
-	{include $basePathModule . "AdminModule/templates/system/boxesSettings.latte"}
+	{var t = $basePathModule . "AdminModule/templates/system/boxesSettings.latte"}
+  	{include $t id => $idPage}
 
 {/block}

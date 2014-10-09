@@ -3,5 +3,5 @@
   <li {if $active == "settings"}class="active"{/if}><a class="ajax settingsTab" n:href="Settings:default idPage => $idPage">{_'Settings'}</a></li>
   
   {var t = $basePathModule . "AdminModule/templates/system/boxes.latte"}
-  {include $basePathModule id => $idPage}
+  {include $t id => $idPage}
 </ul>

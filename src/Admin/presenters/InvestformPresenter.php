@@ -48,8 +48,12 @@ class InvestformPresenter extends BasePresenter
         $grid->addColumnText('company', 'Company')->setCustomRender(function($item) {
             return $item->getCompany();
         });
+        //TODO prekladac
+        $grid->addColumnText('demand', 'Demand')->setCustomRender(function($item) {
+            return "Odesláno";
+        });
         $grid->addColumnText('contract', 'Contract')->setCustomRender(function($item) {
-            return $item->getBirthdateNumber() ? 'Sent' : 'Not sent';
+            return $item->getBirthdateNumber() ? 'Odesláno' : 'Neodesláno';
         });
 
         $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
