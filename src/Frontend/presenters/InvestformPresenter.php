@@ -55,6 +55,8 @@ class InvestformPresenter extends BasePresenter
 		$form->addText('registrationNumber', 'Registration number')
 			->addConditionOn($form['invest'], Form::EQUAL, true)
 	        ->addRule(Form::FILLED, 'Registration number is mandatory.');
+		$form->addText('bankAccountPrefix', 'Bank account')
+			->addRule(callback($this, 'validateBankAccount'), "Bank acccount prefix is not valid`.");
 		$form->addText('bankAccount', 'Bank account')
 			->setRequired('Bank account is mandatory.')
 			->addRule(callback($this, 'validateBankAccount'), "Bank acccount is not valid`.");

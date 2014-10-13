@@ -7,6 +7,8 @@
 
 namespace WebCMS\InvestformModule\Common;
 
+require(APP_DIR . '/fpdm/fpdm.php');
+
 use Nette\Templating\FileTemplate;
 
 /**
@@ -47,7 +49,7 @@ class PdfPrinter
 	{
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
 		
-		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis.pdf";
+		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis1.pdf";
 		$bNumber = $this->investment->getBirthdateNumber();
 		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getAddressString() : '-');
 
@@ -66,6 +68,11 @@ class PdfPrinter
 			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
 			'pin' => $this->investment->getPin()
 		);
+
+		$pdf = new \FPDM($templatePath);
+		$pdf->Load($fieldData); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
+		$pdf->Merge();
+		$pdf->Output();
 
 		$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
 		\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
