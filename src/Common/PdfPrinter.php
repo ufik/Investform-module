@@ -70,12 +70,12 @@ class PdfPrinter
 		);
 
 		$pdf = new \FPDM($templatePath);
-		$pdf->Load($fieldData); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
+		$pdf->Load($fieldData, true); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
 		$pdf->Merge();
 		$pdf->Output();
 
-		$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
-		\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
+		//$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
+		//\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
 
 		return $this->processPdf($response, $outputPath);
 	}
