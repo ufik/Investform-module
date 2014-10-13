@@ -27,29 +27,29 @@ class PdfPrinter
 	{
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
 		
-		$template = new FileTemplate(APP_DIR . '/templates/investform-module/Investform/form.latte');
-		
 		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace.pdf';
 		$length = $this->investment->getInvestmentLength();
 		$fieldData = array(
-		    'investmentAmount' => $this->investment->getInvestment(),
-		    'investmentAmountGraph' => $this->investment->getInvestment(),
-		    'investmentLength' => $length . ' ' . ($length === 3 ? 'roky' : 'let'), // TODO move to settings
-		    'incomeAfterTaxes' => \WebCMS\Helpers\SystemHelper::price($fvoa->getNetIncome()),
-		    'incomeBeforeTaxes' => \WebCMS\Helpers\SystemHelper::price($fvoa->getProfit())
+			'name' => $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname(),
+		    'investmentAmount' => number_format($this->investment->getInvestment(), 0, ",", " ") . ' Kč',
+		    'investmentAmountGraph' => number_format($this->investment->getInvestment(), 0, ",", " ") . ' Kč',
+		    'address' => $this->investment->getAddress()->getAddressString(),
+		    'bankAccountNumber' => $this->investment->getBankAccount(),
+		    'email' => $this->investment->getEmail(),
+		    'telephoneNumber' => $this->investment->getPhone(),
+		    'investmentLength' => $length . ' ' . ($length == '3' ? 'roky' : 'let'), // TODO move to settings
+		    'incomeAfterTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", " ") . ' Kč',
+		    'incomeBeforeTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", " ") . ' Kč'
 		);
 
-		$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
-		\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
-
-		return $this->processPdf($response, $outputPath);
+		return $this->processPdf($response, $templatePath, $fieldData);
 	}
 
 	public function printPdfContract($response = false)
 	{
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
 		
-		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis1.pdf";
+		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis.pdf";
 		$bNumber = $this->investment->getBirthdateNumber();
 		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getAddressString() : '-');
 
@@ -60,8 +60,9 @@ class PdfPrinter
 		    'mailingAddress' => $postalAddress,
 		    'bankAccountNumber' => $this->investment->getBankAccount(),
 		    'email' => $this->investment->getEmail(),
-		    'paymentAmount' => \WebCMS\Helpers\SystemHelper::price($fvoa->getPurchaseAmount()),
+		    'paymentAmount' => number_format($fvoa->getPurchaseAmount(), 0, ",", " ") . ' Kč',
 		    'paymentBankAccount' => '2110773767/2700', // TODO move to settings
+		    'telephoneNumber' => $this->investment->getPhone(),
 		    'paymentVariableSymbol' => (!empty($bNumber) ? 
 		    									$bNumber :
 		    									$this->investment->getRegistrationNumber()),
@@ -69,37 +70,33 @@ class PdfPrinter
 			'pin' => $this->investment->getPin()
 		);
 
+		return $this->processPdf($response, $templatePath, $fieldData);
+	}
+
+	private function processPdf($response, $templatePath, $fieldData)
+	{
 		$pdf = new \FPDM($templatePath);
 		$pdf->Load($fieldData, true); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
 		$pdf->Merge();
-		$pdf->Output();
 
-		//$outputPath = WWW_DIR . '/' . mt_rand() . '.pdf';
-		//\PHPPDFFill\PDFFill::make($templatePath, $fieldData)->save_pdf($outputPath);
-
-		return $this->processPdf($response, $outputPath);
-	}
-
-	private function processPdf($response, $pdfPath)
-	{
 		if ($response) {
 			header('Content-type: application/pdf');
 			header('Content-Disposition: inline; filename="smlouva.pdf"');
 			header('Content-Transfer-Encoding: binary');
-			header('Content-Length: ' . filesize($pdfPath));
+			//header('Content-Length: ' . filesize($pdfPath));
 			header('Accept-Ranges: bytes');
 
-			@readfile($pdfPath);
+			$pdf->Output();
 
-			unlink($pdfPath);
 			die();
 		} else {
 			ob_start();
-			@readfile($pdfPath);
+			
+			$pdf->Output();
+
 			$pdf = ob_get_contents();
 			ob_clean();
 
-			unlink($pdfPath);
 			return $pdf;
 		}
 	}
