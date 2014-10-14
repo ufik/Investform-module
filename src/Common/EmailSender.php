@@ -33,6 +33,9 @@ class EmailSender
 		$pdfPrinter = new PdfPrinter($this->investment);
 		$emailAttachment = $this->type == 'form' ? $pdfPrinter->printPdfForm() : $pdfPrinter->printPdfContract();
 		
+		$filePath = WWW_DIR . mt_rand() . '.pdf';
+		file_put_contents($filePath, $emailAttachment);
+
 		$mail = new Message;
 		$mail->setFrom($this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue())
 		    ->addTo($this->investment->getEmail())
@@ -41,8 +44,10 @@ class EmailSender
 
 	    	$fileName = $this->type == 'form' ? 'nezavazna_kalkulace' : 'navrh_smlouvy';
 
-		$mail->addAttachment($fileName . '.pdf', $emailAttachment);
+		$mail->addAttachment($filePath, null, 'application/pdf');
 
 		$mail->send();
+
+		unlink($filePath);
 	}
 }

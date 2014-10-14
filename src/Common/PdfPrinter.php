@@ -31,15 +31,15 @@ class PdfPrinter
 		$length = $this->investment->getInvestmentLength();
 		$fieldData = array(
 			'name' => $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname(),
-		    'investmentAmount' => number_format($this->investment->getInvestment(), 0, ",", " ") . ' Kč',
-		    'investmentAmountGraph' => number_format($this->investment->getInvestment(), 0, ",", " ") . ' Kč',
+		    'investmentAmount' => number_format($this->investment->getInvestment(), 0, ",", ".") . ',- Kč',
+		    'investmentAmountGraph' => number_format($this->investment->getInvestment(), 0, ",", ".") . ',- Kč',
 		    'address' => $this->investment->getAddress()->getAddressString(),
 		    'bankAccountNumber' => $this->investment->getBankAccount(),
 		    'email' => $this->investment->getEmail(),
 		    'telephoneNumber' => $this->investment->getPhone(),
 		    'investmentLength' => $length . ' ' . ($length == '3' ? 'roky' : 'let'), // TODO move to settings
-		    'incomeAfterTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", " ") . ' Kč',
-		    'incomeBeforeTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", " ") . ' Kč'
+		    'incomeAfterTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", ".") . ',- Kč',
+		    'incomeBeforeTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", ".") . ',- Kč'
 		);
 
 		return $this->processPdf($response, $templatePath, $fieldData);
@@ -60,7 +60,7 @@ class PdfPrinter
 		    'mailingAddress' => $postalAddress,
 		    'bankAccountNumber' => $this->investment->getBankAccount(),
 		    'email' => $this->investment->getEmail(),
-		    'paymentAmount' => number_format($fvoa->getPurchaseAmount(), 0, ",", " ") . ' Kč',
+		    'paymentAmount' => number_format($fvoa->getPurchaseAmount(), 0, ',', '.') . ',- Kč',
 		    'paymentBankAccount' => '2110773767/2700', // TODO move to settings
 		    'telephoneNumber' => $this->investment->getPhone(),
 		    'paymentVariableSymbol' => (!empty($bNumber) ? 
