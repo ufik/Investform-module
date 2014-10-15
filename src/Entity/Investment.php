@@ -85,7 +85,7 @@ class Investment extends \WebCMS\Entity\Entity
     private $pin;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", nullable=true)
      */
     private $contractSend;
 
