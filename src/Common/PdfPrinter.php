@@ -51,7 +51,7 @@ class PdfPrinter
 		
 		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis.pdf";
 		$bNumber = $this->investment->getBirthdateNumber();
-		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getAddressString() : '-');
+		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getName() . ' ' . $this->investment->getPostalAddress()->getLastname() . ', ' . $this->investment->getPostalAddress()->getAddressString() : '-');
 
 		$fieldData = array(
 		    'name' => $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname(),
