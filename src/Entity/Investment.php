@@ -85,6 +85,11 @@ class Investment extends \WebCMS\Entity\Entity
     private $pin;
 
     /**
+     * @ORM\Column(type="smallint")
+     */
+    private $contractSend;
+
+    /**
      * Gets the value of phone.
      *
      * @return mixed
@@ -378,6 +383,30 @@ class Investment extends \WebCMS\Entity\Entity
     public function setPin($pin)
     {
         $this->pin = $pin;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of contractSend.
+     *
+     * @return mixed
+     */
+    public function getContractSend()
+    {
+        return $this->contractSend;
+    }
+
+    /**
+     * Sets the value of contractSend.
+     *
+     * @param mixed $contractSend the contract send
+     *
+     * @return self
+     */
+    public function setContractSend($contractSend)
+    {
+        $this->contractSend = $contractSend;
 
         return $this;
     }
