@@ -32,9 +32,6 @@ class EmailSender
 	{
 		$pdfPrinter = new PdfPrinter($this->investment);
 		$emailAttachment = $this->type == 'form' ? $pdfPrinter->printPdfForm() : $pdfPrinter->printPdfContract();
-		
-		$filePath = WWW_DIR . mt_rand() . '.pdf';
-		file_put_contents($filePath, $emailAttachment);
 
 		$mail = new Message;
 		$mail->setFrom($this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue())
@@ -42,7 +39,13 @@ class EmailSender
 		    ->setSubject($this->settings->get(ucfirst($this->type).' Subject', 'InvestformModule', 'text')->getValue())
 		    ->setHTMLBody($this->settings->get(ucfirst($this->type).' Email body', 'InvestformModule', 'textarea')->getValue());
 
-	    	$fileName = $this->type == 'form' ? 'nezavazna_kalkulace' : 'navrh_smlouvy';
+	    $name = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getName()));
+	    $lastname = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getLastName()));
+
+	    $filePath = $this->type == 'form' ? 
+	    'zajistena-investice_Kalkulace_' . $name . '_' . $lastname . '.pdf' :
+    	'zajistena-investice_Smlouva__' . $name . '_' . $lastname . '.pdf';
+		file_put_contents($filePath, $emailAttachment);
 
 		$mail->addAttachment($filePath, null, 'application/pdf');
 
