@@ -53,7 +53,7 @@ class InvestformPresenter extends BasePresenter
             return "Odesláno";
         });
         $grid->addColumnText('contract', 'Contract')->setCustomRender(function($item) {
-            return $item->getBirthdateNumber() ? 'Odesláno' : 'Neodesláno';
+            return $item->getContractSend() ? 'Odesláno' : 'Neodesláno';
         });
 
         $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
@@ -173,6 +173,9 @@ class InvestformPresenter extends BasePresenter
 
         $emailSender = new EmailSender($this->settings, $investment, 'contract');
         $emailSender->send();
+
+        $investment->setContractSend(true);
+        $this->em->flush();
 
         $this->flashMessage('Contract has been sent to the client\'s email address.', 'success');
         $this->forward('default', array(

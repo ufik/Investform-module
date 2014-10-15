@@ -262,6 +262,7 @@ class InvestformPresenter extends BasePresenter
 		$investment = $this->em->getRepository('WebCMS\InvestformModule\Entity\Investment')->find($values->idUser);
 		$investment->setBirthdateNumber($values->birthdateNumber);
 		$investment->setPin($values->pin);
+		$investment->setContractSend(true);
 
 		if ($values->postalAddress) {
 			$address = new Address;
