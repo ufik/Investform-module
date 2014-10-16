@@ -243,7 +243,7 @@ class InvestformPresenter extends BasePresenter
 			    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
 			    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
 
-			//$mail->send();
+			$mail->send();
 		}
 
 		$this->redirect('default', array(
