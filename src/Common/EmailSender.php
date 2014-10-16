@@ -49,7 +49,7 @@ class EmailSender
 
 		$mail->addAttachment($filePath, null, 'application/pdf');
 
-		$mail->send();
+		//$mail->send();
 
 		unlink($filePath);
 	}

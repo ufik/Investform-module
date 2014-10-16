@@ -124,7 +124,7 @@ class InvestformPresenter extends BasePresenter
         $this->investment->setBirthdateNumber($values->birthdateNumber);
         $this->investment->setCompany($values->company);
         $this->investment->setPin($values->pin);
-        $this->investment->setBankAccount($values->bankAccount);
+        $this->investment->setBankAccount(str_replace('_', '', $values->bankAccount));
         $this->investment->setRegistrationNumber($values->registrationNumber);
         $this->investment->setInvestment($values->investment);
         $this->investment->setInvestmentLength($values->investmentLength);
