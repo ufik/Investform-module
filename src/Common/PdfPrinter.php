@@ -64,7 +64,7 @@ class PdfPrinter
 		    'paymentBankAccount' => '2110773767/2700', // TODO move to settings
 		    'telephoneNumber' => $this->investment->getPhone(),
 		    'paymentVariableSymbol' => (!empty($bNumber) ? 
-		    									$bNumber :
+		    									str_replace('/', '', $bNumber) :
 		    									$this->investment->getRegistrationNumber()),
 			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
 			'pin' => $this->investment->getPin()
