@@ -35,7 +35,7 @@ class EmailSender
 
 		$htmlBody = $this->settings->get(ucfirst($this->type).' Email body', 'InvestformModule', 'textarea')->getValue();
 
-		$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . '/upload/contracts/' . $this->investment->getHash() . '.pdf'));
+		$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . 'upload/contracts/' . $this->investment->getHash() . '.pdf'));
 
 		$mail = new Message;
 		$mail->setFrom($this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue())
