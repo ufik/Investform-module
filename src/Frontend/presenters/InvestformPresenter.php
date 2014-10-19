@@ -80,9 +80,16 @@ class InvestformPresenter extends BasePresenter
 			'hash' => $parameters[1]
 		));
 
-		$form->addText('birthdateNumber', 'Birthdate number')
-			->setRequired('Birthdate number is mandatory.')
-			->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
+		$companyNumber = $this->investment->getRegistrationNumber();
+		if (!empty($companyNumber)) {
+			$form->addText('birthdateNumber', 'Birthdate number')
+				->setRequired('Birthdate number is mandatory.')
+				->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
+		} else {
+			$form->addText('birthdateNumber', 'Birthdate number')
+				->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
+		}
+
 		$form->addText('pin', 'Pin number');
 		$form->addCheckbox('postalAddress', 'Postal address');
 		$form->addText('name', 'Name')

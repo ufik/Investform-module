@@ -29,8 +29,10 @@ class PdfPrinter
 		
 		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace.pdf';
 		$length = $this->investment->getInvestmentLength();
+
+		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
 		$fieldData = array(
-			'name' => $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname(),
+			'name' => $name,
 		    'investmentAmount' => number_format($this->investment->getInvestment(), 0, ",", ".") . ',- Kč',
 		    'investmentAmountGraph' => number_format($this->investment->getInvestment(), 0, ",", ".") . ',- Kč',
 		    'address' => $this->investment->getAddress()->getAddressString(),
@@ -53,8 +55,10 @@ class PdfPrinter
 		$bNumber = $this->investment->getBirthdateNumber();
 		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getName() . ' ' . $this->investment->getPostalAddress()->getLastname() . ', ' . $this->investment->getPostalAddress()->getAddressString() : '-');
 
+		$company = $this->investment->getCompany();
+		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
 		$fieldData = array(
-		    'name' => $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname(),
+		    'name' => $name,
 		    'identificationNumber' => $bNumber,
 		    'address' => $this->investment->getAddress()->getAddressString(),
 		    'mailingAddress' => $postalAddress,
