@@ -46,12 +46,12 @@ class EmailSender
 	    $name = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getName()));
 	    $lastname = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getLastName()));
 
-	    $filePath = $this->type == 'form' ? 
+	   /* $filePath = $this->type == 'form' ? 
 	    'zajistena-investice_Kalkulace_' . $name . '-' . $lastname . '.pdf' :
     	'zajistena-investice_Smlouva_' . $name . '-' . $lastname . '.pdf';
 		file_put_contents($filePath, $emailAttachment);
 
-		$mail->addAttachment($filePath, null, 'application/pdf');
+		$mail->addAttachment($filePath, null, 'application/pdf');*/
 
 		$mail->send();
 
