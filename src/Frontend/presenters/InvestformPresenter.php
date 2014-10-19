@@ -82,13 +82,12 @@ class InvestformPresenter extends BasePresenter
 
 		$investment = $this->em->getRepository('WebCMS\InvestformModule\Entity\Investment')->findOneByHash($parameters[1]);
 		$companyNumber = $investment->getRegistrationNumber();
-		if (!empty($companyNumber)) {
+		if (empty($companyNumber)) {
 			$form->addText('birthdateNumber', 'Birthdate number')
 				->setRequired('Birthdate number is mandatory.')
 				->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
 		} else {
-			$form->addText('birthdateNumber', 'Birthdate number')
-				->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
+			$form->addText('birthdateNumber', 'Birthdate number');
 		}
 
 		$form->addText('pin', 'Pin number');
