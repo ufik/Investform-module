@@ -87,7 +87,7 @@ class InvestformPresenter extends BasePresenter
 				->setRequired('Birthdate number is mandatory.')
 				->addRule(callback($this, 'validateBirthdateNumber'), "Birthdate can contain just numbers.");
 		} else {
-			$form->addText('birthdateNumber', 'Birthdate number');
+			$form->addHidden('birthdateNumber');
 		}
 
 		$form->addText('pin', 'Pin number');

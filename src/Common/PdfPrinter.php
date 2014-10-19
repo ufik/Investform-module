@@ -57,9 +57,10 @@ class PdfPrinter
 
 		$company = $this->investment->getCompany();
 		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
+		$id = (!empty($bNumber) ? str_replace('/', '', $bNumber) : $this->investment->getRegistrationNumber());
 		$fieldData = array(
 		    'name' => $name,
-		    'identificationNumber' => $bNumber,
+		    'identificationNumber' => $id,
 		    'address' => $this->investment->getAddress()->getAddressString(),
 		    'mailingAddress' => $postalAddress,
 		    'bankAccountNumber' => $this->investment->getBankAccount(),
@@ -67,9 +68,7 @@ class PdfPrinter
 		    'paymentAmount' => number_format($fvoa->getPurchaseAmount(), 0, ',', '.') . ',- Kč',
 		    'paymentBankAccount' => '2110773767/2700', // TODO move to settings
 		    'telephoneNumber' => $this->investment->getPhone(),
-		    'paymentVariableSymbol' => (!empty($bNumber) ? 
-		    									str_replace('/', '', $bNumber) :
-		    									$this->investment->getRegistrationNumber()),
+		    'paymentVariableSymbol' => $id,
 			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
 			'pin' => $this->investment->getPin()
 		);
