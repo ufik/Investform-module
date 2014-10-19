@@ -42,7 +42,7 @@ class PdfPrinter
 		    'incomeBeforeTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", ".") . ',- Kč'
 		);
 
-		return $this->processPdf($response, $templatePath, $fieldData);
+		return $this->processPdf($response, $templatePath, $fieldData, $this->investment);
 	}
 
 	public function printPdfContract($response = false)
@@ -70,34 +70,47 @@ class PdfPrinter
 			'pin' => $this->investment->getPin()
 		);
 
-		return $this->processPdf($response, $templatePath, $fieldData);
+		return $this->processPdf($response, $templatePath, $fieldData, $this->investment);
 	}
 
-	private function processPdf($response, $templatePath, $fieldData)
+	private function processPdf($response, $templatePath, $fieldData, $investment)
 	{
 		$pdf = new \FPDM($templatePath);
 		$pdf->Load($fieldData, true); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
 		$pdf->Merge();
 
+		$contractPath = WWW_DIR . '/upload/contracts';
+		if (!file_exists($contractPath)) {
+			mkdir($contractPath);
+		}
+
+		$output = $this->getPdfContent($pdf);
+		file_put_contents($contractPath . '/' . $investment->getHash() . '.pdf', $output);
+
 		if ($response) {
 			header('Content-type: application/pdf');
 			header('Content-Disposition: inline; filename="smlouva.pdf"');
 			header('Content-Transfer-Encoding: binary');
-			//header('Content-Length: ' . filesize($pdfPath));
+			header('Content-Length: ' . filesize($contractPath . '/' . $investment->getHash() . '.pdf'));
 			header('Accept-Ranges: bytes');
 
-			$pdf->Output();
+			echo $output;
 
 			die();
 		} else {
-			ob_start();
-			
-			$pdf->Output();
-
-			$pdf = ob_get_contents();
-			ob_clean();
-
-			return $pdf;
+			return $output;
 		}
+	}
+
+	private function getPdfContent($pdf)
+	{
+		ob_start();
+		
+		$pdf->Output();
+
+		$pdf = ob_get_contents();
+		ob_clean();
+
+		return $pdf;
 	}
 }

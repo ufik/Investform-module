@@ -33,11 +33,15 @@ class EmailSender
 		$pdfPrinter = new PdfPrinter($this->investment);
 		$emailAttachment = $this->type == 'form' ? $pdfPrinter->printPdfForm() : $pdfPrinter->printPdfContract();
 
+		$htmlBody = $this->settings->get(ucfirst($this->type).' Email body', 'InvestformModule', 'textarea')->getValue();
+
+		$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . '/upload/contracts/' . $this->investment->getHash() . '.pdf'));
+
 		$mail = new Message;
 		$mail->setFrom($this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue())
 		    ->addTo($this->investment->getEmail())
 		    ->setSubject($this->settings->get(ucfirst($this->type).' Subject', 'InvestformModule', 'text')->getValue())
-		    ->setHTMLBody($this->settings->get(ucfirst($this->type).' Email body', 'InvestformModule', 'textarea')->getValue());
+		    ->setHTMLBody($htmlBody);
 
 	    $name = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getName()));
 	    $lastname = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getLastName()));
