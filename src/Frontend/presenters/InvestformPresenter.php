@@ -80,7 +80,8 @@ class InvestformPresenter extends BasePresenter
 			'hash' => $parameters[1]
 		));
 
-		$companyNumber = $this->investment->getRegistrationNumber();
+		$investment = $this->em->getRepository('WebCMS\InvestformModule\Entity\Investment')->findOneByHash($parameters[1]);
+		$companyNumber = $investment->getRegistrationNumber();
 		if (!empty($companyNumber)) {
 			$form->addText('birthdateNumber', 'Birthdate number')
 				->setRequired('Birthdate number is mandatory.')
@@ -234,13 +235,13 @@ class InvestformPresenter extends BasePresenter
 		$investment->setAddress($address);
 		$investment->setBankAccount(str_replace('_', '', $values->bankAccount));
 
-		$this->sendPdf($investment, 'form');
-
 		$this->em->persist($investment);
 		$this->em->flush();
 
 		$investment->getHash();
 		$this->em->flush();
+
+		$this->sendPdf($investment, 'form');
 
 		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
 		if (!empty($infoEmail)) {
