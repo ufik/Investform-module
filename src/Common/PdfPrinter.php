@@ -30,6 +30,7 @@ class PdfPrinter
 		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace.pdf';
 		$length = $this->investment->getInvestmentLength();
 
+		$company = $this->investment->getCompany();
 		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
 		$fieldData = array(
 			'name' => $name,
