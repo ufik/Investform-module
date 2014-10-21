@@ -44,7 +44,7 @@ class PdfPrinter
 		    'incomeBeforeTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", ".") . ',- Kč'
 		);
 
-		return $this->processPdf($response, $templatePath, $fieldData, $this->investment);
+		return $this->processPdf($response, $templatePath, $fieldData, $this->investment, $this->investment->getHash());
 	}
 
 	public function printPdfContract($response = false)
@@ -73,10 +73,10 @@ class PdfPrinter
 			'pin' => $this->investment->getPin()
 		);
 
-		return $this->processPdf($response, $templatePath, $fieldData, $this->investment);
+		return $this->processPdf($response, $templatePath, $fieldData, $this->investment, $this->investment->getContractHash());
 	}
 
-	private function processPdf($response, $templatePath, $fieldData, $investment)
+	private function processPdf($response, $templatePath, $fieldData, $investment, $hash)
 	{
 		$pdf = new \FPDM($templatePath);
 		$pdf->Load($fieldData, true); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
@@ -88,7 +88,7 @@ class PdfPrinter
 		}
 
 		$output = $this->getPdfContent($pdf);
-		file_put_contents($contractPath . '/' . $investment->getHash() . '.pdf', $output);
+		file_put_contents($contractPath . '/' . $hash . '.pdf', $output);
 
 		if ($response) {
 			header('Content-type: application/pdf');

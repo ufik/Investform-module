@@ -340,6 +340,16 @@ class Investment extends \WebCMS\Entity\Entity
     }
 
     /**
+     * Gets the value of hash.
+     *
+     * @return mixed
+     */
+    public function getContractHash()
+    {
+        return $this->hash = md5('contract' . $this->id . $this->created->format('Y-m-d H:i:s'));
+    }
+
+    /**
      * Gets the value of bankAccount.
      *
      * @return mixed

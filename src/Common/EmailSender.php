@@ -31,11 +31,13 @@ class EmailSender
 	public function send()
 	{
 		$pdfPrinter = new PdfPrinter($this->investment);
-		$emailAttachment = $this->type == 'form' ? $pdfPrinter->printPdfForm() : $pdfPrinter->printPdfContract();
 
 		$htmlBody = $this->settings->get(ucfirst($this->type).' Email body', 'InvestformModule', 'textarea')->getValue();
-
-		$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . 'upload/contracts/' . $this->investment->getHash() . '.pdf'));
+		if ($this->type == 'form') {
+			$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . 'upload/contracts/' . $this->investment->getHash() . '.pdf'));
+		} else {
+			$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . 'upload/contracts/' . $this->investment->getContractHash() . '.pdf'));
+		}
 
 		$mail = new Message;
 		$mail->setFrom($this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue())
@@ -46,15 +48,6 @@ class EmailSender
 	    $name = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getName()));
 	    $lastname = ucfirst(\Nette\Utils\Strings::webalize($this->investment->getAddress()->getLastName()));
 
-	   /* $filePath = $this->type == 'form' ? 
-	    'zajistena-investice_Kalkulace_' . $name . '-' . $lastname . '.pdf' :
-    	'zajistena-investice_Smlouva_' . $name . '-' . $lastname . '.pdf';
-		file_put_contents($filePath, $emailAttachment);
-
-		$mail->addAttachment($filePath, null, 'application/pdf');*/
-
 		$mail->send();
-
-		unlink($filePath);
 	}
 }
