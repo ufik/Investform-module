@@ -95,7 +95,7 @@ class PdfPrinter
 			header('Content-type: application/pdf');
 			header('Content-Disposition: inline; filename="smlouva.pdf"');
 			header('Content-Transfer-Encoding: binary');
-			header('Content-Length: ' . filesize($contractPath . '/' . $investment->getHash() . '.pdf'));
+			header('Content-Length: ' . filesize($contractPath . '/' . $hash . '.pdf'));
 			header('Accept-Ranges: bytes');
 
 			echo $output;
