@@ -40,6 +40,7 @@ class InvestformPresenter extends BasePresenter
 		$form->addText('name', 'Name')->setRequired('Name is mandatory.');
 		$form->addText('lastname', 'Lastname')->setRequired('Lastname is mandatory.');
 		$form->addText('street', 'Street')->setRequired('Street is mandatory.');
+		$form->addText('date', 'Date')->setRequired('Date is mandatory.');
 		$form->addText('postcode', 'Postcode')
 			->setRequired('Postcode is mandatory.')
 			->addRule(Form::PATTERN, 'Postcode must contain 5 numbers.', '([0-9]\s*){5}');

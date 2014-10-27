@@ -41,6 +41,7 @@ class CalculatorPresenter extends BasePresenter
 		$form->addSelect('amount', 'Amount', $this->amountItems)
 			->setAttribute('placeholder', 'Type investement amount');
 		$form->addSelect('length', 'Length', array(3 => 3, 5 => 5));
+		$form->addText('date', 'Date')->setRequired('Date is mandatory.');
 
 		$form->addSubmit('calculate', 'Calculate');
 
