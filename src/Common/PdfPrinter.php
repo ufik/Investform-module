@@ -25,7 +25,7 @@ class PdfPrinter
 
 	public function printPdfForm($response = false)
 	{
-		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
+		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getRealInvestmentLength());
 		
 		$templatePath = APP_DIR . '/../zajistenainvestice-kalkulace.pdf';
 		$length = $this->investment->getInvestmentLength();
@@ -50,7 +50,7 @@ class PdfPrinter
 
 	public function printPdfContract($response = false)
 	{
-		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getInvestmentLength());
+		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getRealInvestmentLength());
 		
 		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis.pdf";
 		$bNumber = $this->investment->getBirthdateNumber();
