@@ -56,6 +56,11 @@ class Investment extends \WebCMS\Entity\Entity
 	 */
 	private $investmentLength;
 
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $investmentDate;
+
 	/**
      * @ORM\OneToOne(targetEntity="Address") 
      */
@@ -216,7 +221,14 @@ class Investment extends \WebCMS\Entity\Entity
      */
     public function getInvestmentLength()
     {
-        return $this->investmentLength;
+        $from = strtotime($this->investmentDate);
+        if ($this->investmentLength == 5) {
+            $to = strtotime('2019-10-30');
+        } else {
+            $to = strtotime('2017-10-30');
+        }
+
+        return ($to - $from) / 60 / 60 / 24 / 365;
     }
 
     /**
@@ -417,6 +429,30 @@ class Investment extends \WebCMS\Entity\Entity
     public function setContractSend($contractSend)
     {
         $this->contractSend = $contractSend;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of investmentDate.
+     *
+     * @return mixed
+     */
+    public function getInvestmentDate()
+    {
+        return $this->investmentDate;
+    }
+
+    /**
+     * Sets the value of investmentDate.
+     *
+     * @param mixed $investmentDate the investment date
+     *
+     * @return self
+     */
+    public function setInvestmentDate($investmentDate)
+    {
+        $this->investmentDate = $investmentDate;
 
         return $this;
     }

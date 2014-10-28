@@ -228,6 +228,7 @@ class InvestformPresenter extends BasePresenter
 		$investment = new Investment;
 		$investment->setPhone($values->phone);
 		$investment->setEmail($values->email);
+		$investment->setInvestmentDate(strtotime($values->date));
 		$investment->setInvestment($values->investmentAmount);
 		$investment->setInvestmentLength($values->investmentLength);
 		$investment->setRegistrationNumber($values->registrationNumber);
@@ -297,8 +298,17 @@ class InvestformPresenter extends BasePresenter
 		));
 	}
 
-	public function handlegetNetIncome($amount, $length)
+	public function handlegetNetIncome($amount, $length, $date)
 	{
+		$from = strtotime($date);
+		if ($length == 5) {
+			$to = strtotime('2019-10-30');
+		} else {
+			$to = strtotime('2017-10-30');
+		}
+
+		$length = ($to - $from) / 60 / 60 / 24 / 365;
+
 		$fvoa = new \WebCMS\InvestformModule\Common\FutureValueOfAnnuityCalculator($amount, $length);
 
 		$this->payload->profit = \WebCMS\Helpers\SystemHelper::price($fvoa->getTotalProfit(), '%.0n');
