@@ -30,7 +30,11 @@ class FutureValueOfAnnuityCalculator
 			5 => new Rate(5, 0.09, 1.03)
 		);
 
-		$this->rate = $this->rates[$this->length];
+        if ($this->length > 3) {
+            $this->rate = $this->rates[5];
+        } else {
+            $this->rate = $this->rates[3];
+        }
 	}
 
 	public function getProfit()

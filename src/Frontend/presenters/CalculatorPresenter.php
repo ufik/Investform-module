@@ -54,7 +54,16 @@ class CalculatorPresenter extends BasePresenter
 	{
 		$values = $form->getValues();
 
-		$this->fvoa = new FutureValueOfAnnuityCalculator($values->amount, $values->length);
+		$from = strtotime($values->date);
+		if ($values->length == 5) {
+			$to = strtotime('2019-10-30');
+		} else {
+			$to = strtotime('2017-10-30');
+		}
+
+		$length = ($to - $from) / 60 / 60 / 24 / 365;
+
+		$this->fvoa = new FutureValueOfAnnuityCalculator($values->amount, $length);
 	}
 
 	public function renderDefault($id)
