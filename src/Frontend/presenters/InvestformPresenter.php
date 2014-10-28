@@ -228,7 +228,7 @@ class InvestformPresenter extends BasePresenter
 		$investment = new Investment;
 		$investment->setPhone($values->phone);
 		$investment->setEmail($values->email);
-		$investment->setInvestmentDate(strtotime($values->date));
+		$investment->setInvestmentDate(new \Datetime(date('Y-m-d', strtotime($values->date))));
 		$investment->setInvestment($values->investmentAmount);
 		$investment->setInvestmentLength($values->investmentLength);
 		$investment->setRegistrationNumber($values->registrationNumber);

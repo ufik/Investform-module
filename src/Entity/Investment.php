@@ -221,7 +221,7 @@ class Investment extends \WebCMS\Entity\Entity
      */
     public function getInvestmentLength()
     {
-        $from = strtotime($this->investmentDate);
+        $from = strtotime($this->investmentDate->format('Y-m-d'));
         if ($this->investmentLength == 5) {
             $to = strtotime('2019-10-30');
         } else {
