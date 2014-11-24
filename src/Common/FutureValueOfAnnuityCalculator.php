@@ -37,11 +37,25 @@ class FutureValueOfAnnuityCalculator
         }
 	}
 
-	public function getProfit()
+	public function getProfit($length = null)
 	{
+        if (!$length) {
+            $length = $this->length;
+        }
+
 		$rate = 1 + $this->rate->getRate();
-		return $this->amount * pow($rate, $this->length) - $this->amount;
+		return $this->amount * pow($rate, $length) - $this->amount;
 	}
+
+    public function getProfitsByYear()
+    {
+        $profits = array();
+        for ($i=1; $i < $this->length; $i++) { 
+            $profits[$i] = $this->getProfit($i) - $this->getProfit($i) * 0.15;
+        }
+
+        return $profits;
+    }
 
 	public function getTotalProfit()
 	{
