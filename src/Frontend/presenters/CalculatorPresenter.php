@@ -60,11 +60,11 @@ class CalculatorPresenter extends BasePresenter
 
 		$from = strtotime($values->date);
 		if ($values->length == 5) {
-			$year = date("Y", strtotime("+ 5 years"));
-			$to = strtotime($year.'-10-30');
+			$year = 2019;
+			$to = strtotime('2019-10-30');
 		} else {
-			$year = date("Y", strtotime("+ 3 years"));
-			$to = strtotime($year.'-10-30');
+			$year = 2017;
+			$to = strtotime('2017-10-30');
 		}
 
 		$length = ($to - $from) / 60 / 60 / 24 / 365;
