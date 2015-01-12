@@ -20,6 +20,8 @@ class CalculatorPresenter extends BasePresenter
 
 	private $fvoa;
 
+	private $year;
+
 	protected function startup() 
     {
 		parent::startup();
@@ -27,6 +29,8 @@ class CalculatorPresenter extends BasePresenter
 		foreach(range(200000, 3000000, 100000) as $number) {
 			$amountItems[$number] = \WebCMS\Helpers\SystemHelper::price($number);
 		}
+
+
 	}
 
 	protected function beforeRender()
@@ -56,22 +60,27 @@ class CalculatorPresenter extends BasePresenter
 
 		$from = strtotime($values->date);
 		if ($values->length == 5) {
-			$to = strtotime('2019-10-30');
+			$year = date("Y", strtotime("+ 5 years"));
+			$to = strtotime($year.'-10-30');
 		} else {
-			$to = strtotime('2017-10-30');
+			$year = date("Y", strtotime("+ 3 years"));
+			$to = strtotime($year.'-10-30');
 		}
 
 		$length = ($to - $from) / 60 / 60 / 24 / 365;
 
-		$this->fvoa = new FutureValueOfAnnuityCalculator($values->amount, $length);
+		$this->year = $year;
+		$this->fvoa = new FutureValueOfAnnuityCalculator($values->amount, $values->length);
 	}
 
 	public function renderDefault($id)
     {	
     	if (!is_object($this->fvoa)) {
     		$this->fvoa = new FutureValueOfAnnuityCalculator(0, 3);
+    		$this->year = "";
     	}
 
+    	$this->template->year = $this->year;
     	$this->template->fvoa = $this->fvoa;
     	$this->template->id = $id;
 	}
