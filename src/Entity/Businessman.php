@@ -126,14 +126,14 @@ class Businessman extends \WebCMS\Entity\Entity
         return $this;
     }
 
-    public function getTelephone()
+    public function getPhone()
     {
-        return $this->telephone;
+        return $this->phone;
     }
     
-    public function setTelephone($telephone)
+    public function setPhone($phone)
     {
-        $this->telephone = $telephone;
+        $this->phone = $phone;
         return $this;
     }
 

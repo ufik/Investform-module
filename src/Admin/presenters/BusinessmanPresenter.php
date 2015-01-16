@@ -8,6 +8,7 @@
 namespace AdminModule\InvestformModule;
 
 use Nette\Forms\Form;
+use WebCMS\InvestformModule\Entity\Businessman;
 
 /**
  * Description of
@@ -60,13 +61,17 @@ class BusinessmanPresenter extends BasePresenter
         $form->addText('phone', 'Phone')->setRequired('Phone is mandatory.');
 
         //generated values
-        $form->addText('businessId', 'Generated businessman ID')
-            ->setValue(mt_rand(10000,99999))
+        $businessId = mt_rand(10000,99999);
+        $form->addText('businessIdDisabled', 'Generated businessman ID')
+            ->setValue($businessId)
             ->setDisabled();
+        $form->addHidden('businessId', $businessId);
 
-        $form->addText('businessUrl', 'Generated businessman URL')
-            ->setValue(bin2hex(mcrypt_create_iv(10, MCRYPT_DEV_URANDOM)))
+        $businessUrl = bin2hex(mcrypt_create_iv(10, MCRYPT_DEV_URANDOM));
+        $form->addText('businessUrlDisabled', 'Generated businessman URL')
+            ->setValue($businessUrl)
             ->setDisabled();
+        $form->addHidden('businessUrl', $businessUrl);
 
         $form->addSubmit('save', 'Save new businessman');
 
@@ -85,7 +90,7 @@ class BusinessmanPresenter extends BasePresenter
         $this->businessman->setStreet($values->street);
         $this->businessman->setZipCity($values->zipCity);
         $this->businessman->setEmail($values->email);
-        $this->businessman->setTelephone($values->telephone);
+        $this->businessman->setPhone($values->phone);
 
         $this->businessman->setBusinessId($values->businessId);
         $this->businessman->setBusinessUrl($values->businessUrl);

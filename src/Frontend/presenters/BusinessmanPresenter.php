@@ -7,6 +7,8 @@
 
 namespace FrontendModule\InvestformModule;
 
+use WebCMS\InvestformModule\Entity\Businessman;
+
 
 /**
  * Description of InvestformPresenter
