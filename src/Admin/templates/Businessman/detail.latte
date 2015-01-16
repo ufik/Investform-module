@@ -1,0 +1,33 @@
+{block content}
+	
+	<br />
+	{if $businessman->getActive()}
+		<a n:href="activeBusinessmen idPage => $idPage" class="">{_'Back to active businessmen'}</a>
+	{else}
+		<a n:href="inactiveBusinessmen idPage => $idPage" class="">{_'Back to inactive businessmen'}</a>
+	{/if}
+
+	<div class="row control-group">
+		<h1>{$businessman->getName()} {$businessman->getLastname()}</h1>
+
+		<p>URL: {$businessman->getBusinessUrl()}</p>
+		<p>ID: {$businessman->getBusinessId()}</p>
+
+		{if $businessman->getActive()}
+			<a n:href="deactivate id => $businessman->getId(), idPage => $idPage, inDetail => true" class="">{_'Deactivate'}</a>
+		{else}
+			<a n:href="activate id => $businessman->getId(), idPage => $idPage, inDetail => true" class="">{_'Activate'}</a>
+		{/if}
+
+		<p>
+			{$businessman->getStreet()}<br />
+			{$businessman->getZipCity()}<br />
+			{$businessman->getPhone()}<br />
+			{$businessman->getEmail()}<br />
+
+			<a n:href="update id => $businessman->getId(), idPage => $idPage" class="">{_'Update'}</a>
+		</p>
+
+	</div>
+
+{/block}
