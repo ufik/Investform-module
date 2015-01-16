@@ -232,7 +232,7 @@ class BusinessmanPresenter extends BasePresenter
     {
         $values = $form->getValues();
 
-        if(!$this->businessman->getId()){
+        if(!$this->businessman){
             $this->businessman = new Businessman;
             $this->businessman->setActive(true);
             $this->em->persist($this->businessman);
@@ -252,16 +252,10 @@ class BusinessmanPresenter extends BasePresenter
 
         $this->flashMessage('Businessman has been updated.', 'success');
 
-        if (!$this->businessman->getId()) {
-            $this->forward('default', array(
-                'idPage' => $this->actualPage->getId()
-            ));
-        } else {
-            $this->forward('detail', array(
-                'id' => $this->businessman->getId(),
-                'idPage' => $this->actualPage->getId()
-            ));
-        }
+        $this->forward('detail', array(
+            'id' => $this->businessman->getId(),
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     public function actionDetail($id, $idPage)

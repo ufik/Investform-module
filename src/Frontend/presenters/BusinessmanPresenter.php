@@ -18,6 +18,11 @@ use WebCMS\InvestformModule\Entity\Businessman;
 class BusinessmanPresenter extends BasePresenter
 {
 	private $id;
+
+	private $businessman;
+
+	/* \Nette\Http\Session */
+	public $businessmanSession;
 	
 	protected function startup() 
     {
@@ -29,8 +34,24 @@ class BusinessmanPresenter extends BasePresenter
 		parent::beforeRender();	
 	}
 
-	public function renderDefault($id)
+	public function actionDefault($id)
     {	
-		$this->template->id = $id;
+		if (isset($_GET['bcode'])) {
+			
+			$this->businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findOneBy(array(
+                'businessUrl' => $_GET['bcode']
+            ));
+
+			if($this->businessman){
+	            $this->businessmanSession = $this->getSession('businessman');
+				$this->businessmanSession->id = $this->businessman->getId();
+			}
+
+		}
+
+		$this->flashMessage('Your business code has been saved.', 'success');
+
+		$this->redirect(':Frontend:Homepage:');
 	}
+
 }
