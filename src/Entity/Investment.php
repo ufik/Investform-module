@@ -95,6 +95,12 @@ class Investment extends \WebCMS\Entity\Entity
     private $contractSend;
 
     /**
+     * @ORM\OneToOne(targetEntity="Businessman") 
+     */
+    private $businessman;
+
+
+    /**
      * Gets the value of phone.
      *
      * @return mixed
@@ -463,6 +469,29 @@ class Investment extends \WebCMS\Entity\Entity
     {
         $this->investmentDate = $investmentDate;
 
+        return $this;
+    }
+
+    /**
+     * Gets the value of businessman.
+     *
+     * @return mixed
+     */
+    public function getBusinessman()
+    {
+        return $this->businessman;
+    }
+
+    /**
+     * Sets the value of businessman.
+     *
+     * @param mixed $businessman the businessman
+     *
+     * @return self
+     */
+    public function setBusinessman($businessman)
+    {
+        $this->businessman = $businessman;
         return $this;
     }
 }
