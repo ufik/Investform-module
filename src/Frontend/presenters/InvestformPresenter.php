@@ -12,6 +12,7 @@ use WebCMS\InvestformModule\Entity\Investment;
 use WebCMS\InvestformModule\Entity\Address;
 use WebCMS\InvestformModule\Common\PdfPrinter;
 use WebCMS\InvestformModule\Common\EmailSender;
+use WebCMS\InvestformModule\Entity\Businessman;
 use Nette\Mail\Message;
 
 /**
@@ -22,6 +23,9 @@ use Nette\Mail\Message;
 class InvestformPresenter extends BasePresenter
 {
 	private $id;
+
+	/* \Nette\Http\Session */
+	public $businessmanSession;
 	
 	protected function startup() 
     {
@@ -91,7 +95,16 @@ class InvestformPresenter extends BasePresenter
 			$form->addHidden('birthdateNumber');
 		}
 
-		$form->addText('pin', 'Pin number');
+		if (isset($this->businessmanSession->id)) {
+
+			$form->addHidden('pin', $this->businessmanSession->id);
+
+			$form['pin']->getControlPrototype()->setClass('session');
+		} else {
+			$form->addText('pin', 'Pin number');
+		}
+		
+
 		$form->addCheckbox('postalAddress', 'Postal address');
 		$form->addText('name', 'Name')
 			->addConditionOn($form['postalAddress'], Form::EQUAL, true)
@@ -198,6 +211,8 @@ class InvestformPresenter extends BasePresenter
     	$parameters = $this->getParameter();
     	$parameters = $parameters['parameters'];
 
+    	$this->businessmanSession = $this->getSession('businessman');
+
     	if (array_key_exists(0, $parameters) && $parameters[0] === '2') {
     		$hash = $parameters[1];
 
@@ -242,7 +257,7 @@ class InvestformPresenter extends BasePresenter
 		$investment->getHash();
 		$this->em->flush();
 
-		$this->sendPdf($investment, 'form');
+		//$this->sendPdf($investment, 'form');
 
 		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
 		if (!empty($infoEmail)) {
@@ -252,7 +267,7 @@ class InvestformPresenter extends BasePresenter
 			    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
 			    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
 
-			$mail->send();
+			//$mail->send();
 		}
 
 		$this->redirect('default', array(
@@ -268,9 +283,17 @@ class InvestformPresenter extends BasePresenter
 	public function step2formSubmitted($form)
 	{
 		$values = $form->getValues();
+		
 		$investment = $this->em->getRepository('WebCMS\InvestformModule\Entity\Investment')->find($values->idUser);
 		$investment->setBirthdateNumber($values->birthdateNumber);
-		$investment->setPin($values->pin);
+
+		if (isset($this->businessmanSession->id)) {
+			$businessman = $this->em->getRepository('WebCMS\InvestformModule\Entity\Businessman')->find($this->businessmanSession->id);
+			$investment->setBusinessman($businessman);
+		} else {
+			$investment->setPin($values->pin);
+		}
+
 		$investment->setContractSend(true);
 
 		if ($values->postalAddress) {
@@ -286,7 +309,7 @@ class InvestformPresenter extends BasePresenter
 			$investment->setPostalAddress($address);
 		}
 
-		$this->sendPdf($investment, 'contract');
+		//$this->sendPdf($investment, 'contract');
 		$this->em->flush();
 
 		$this->redirect('default', array(

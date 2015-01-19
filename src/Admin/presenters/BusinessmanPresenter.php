@@ -9,6 +9,7 @@ namespace AdminModule\InvestformModule;
 
 use Nette\Forms\Form;
 use WebCMS\InvestformModule\Entity\Businessman;
+use WebCMS\InvestformModule\Entity\Investment;
 
 /**
  * Description of
@@ -21,6 +22,8 @@ class BusinessmanPresenter extends BasePresenter
     private $businessman;
 
     private $businessmen;
+
+    private $investments;
 
     protected function startup()
     {
@@ -190,7 +193,7 @@ class BusinessmanPresenter extends BasePresenter
                 ->setDisabled();
 
             $form->addText('businessUrlDisabled', 'Generated businessman URL')
-                ->setValue($_SERVER['HTTP_HOST'].'/?bcode='.$this->businessman->getBusinessUrl())
+                ->setValue($this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode='.$this->businessman->getBusinessUrl())
                 ->setDisabled();
 
             $form->addHidden('businessId', $this->businessman->getBusinessId());
@@ -215,7 +218,7 @@ class BusinessmanPresenter extends BasePresenter
 
             $businessUrl = bin2hex(mcrypt_create_iv(10, MCRYPT_DEV_URANDOM));
             $form->addText('businessUrlDisabled', 'Generated businessman URL')
-                ->setValue($_SERVER['HTTP_HOST'].'/?bcode='.$businessUrl)
+                ->setValue($this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode='.$businessUrl)
                 ->setDisabled();
             $form->addHidden('businessUrl', $businessUrl);
 
@@ -261,13 +264,52 @@ class BusinessmanPresenter extends BasePresenter
     public function actionDetail($id, $idPage)
     {
         $this->businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->find($id);
+        $this->investments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            'businessman' => $this->businessman
+        ));
     }
 
     public function renderDetail($idPage)
     {
         $this->reloadContent();
         $this->template->idPage = $idPage;
+        $this->template->urlCode = $this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode=';
         $this->template->businessman = $this->businessman;
+        $this->template->investments = $this->investments;
+    }
+
+    protected function createComponentInvestmentsGrid($name)
+    {
+
+        $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Investment", null, array(
+            'businessman = '.$this->businessman->getId()
+        ));
+
+        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
+
+        $grid->addFilterDateRange('created', 'Created');
+
+        $grid->addColumnDate('created', 'Created')->setDateFormat(\Grido\Components\Columns\Date::FORMAT_DATETIME);
+
+        $grid->addColumnText('client_name', 'Client name')->setCustomRender(function($item) {
+            return $item->getAddress()->getName().' '.$item->getAddress()->getLastname();
+        });
+
+        $grid->addColumnText('investment', 'Investment');
+        $grid->addColumnText('conractSend', 'Conract send')->setCustomRender(function($item) {
+            if ($item->getContractSend()) {
+                return 'Yes';
+            } else {
+                return 'No';
+            }
+        });
+
+        
+
+        // $grid->addActionHref("activate", 'Activate', 'activate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
+        // $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+
+        return $grid;
     }
 
     

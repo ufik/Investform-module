@@ -10,7 +10,8 @@
 	<div class="row control-group">
 		<h1>{$businessman->getName()} {$businessman->getLastname()}</h1>
 
-		<p>URL: {$businessman->getBusinessUrl()}</p>
+		<p>URL: {$urlCode}{$businessman->getBusinessUrl()}
+		</p>
 		<p>ID: {$businessman->getBusinessId()}</p>
 
 		{if $businessman->getActive()}
@@ -27,6 +28,12 @@
 
 			<a n:href="update id => $businessman->getId(), idPage => $idPage" class="">{_'Update'}</a>
 		</p>
+
+	</div>
+
+	<div class="row control-group">
+		
+		{control investmentsGrid}
 
 	</div>
 

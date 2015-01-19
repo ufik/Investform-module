@@ -48,7 +48,7 @@ class Businessman extends \WebCMS\Entity\Entity
     private $phone;
 
     /**
-     * @ORM\Column(type="integer", columnDefinition="INT(11) UNSIGNED ZEROFILL")
+     * @ORM\Column(type="integer", columnDefinition="INT(11) UNSIGNED")
      */
     private $businessId;
 

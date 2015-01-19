@@ -42,14 +42,18 @@ class BusinessmanPresenter extends BasePresenter
                 'businessUrl' => $_GET['bcode']
             ));
 
-			if($this->businessman){
+			if ($this->businessman) {
 	            $this->businessmanSession = $this->getSession('businessman');
 				$this->businessmanSession->id = $this->businessman->getId();
+
+				$this->flashMessage('Your business code has been saved.', 'success');
+			} else {
+				$this->flashMessage('Wrong business code.', 'error');
 			}
 
 		}
 
-		$this->flashMessage('Your business code has been saved.', 'success');
+
 
 		$this->redirect(':Frontend:Homepage:');
 	}
