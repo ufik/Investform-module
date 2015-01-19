@@ -70,7 +70,7 @@ class CalculatorPresenter extends BasePresenter
 		$length = ($to - $from) / 60 / 60 / 24 / 365;
 
 		$this->year = $year;
-		$this->fvoa = new FutureValueOfAnnuityCalculator($values->amount, $values->length);
+		$this->fvoa = new FutureValueOfAnnuityCalculator($values->amount, $length);
 	}
 
 	public function renderDefault($id)
