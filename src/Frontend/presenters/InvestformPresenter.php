@@ -257,7 +257,7 @@ class InvestformPresenter extends BasePresenter
 		$investment->getHash();
 		$this->em->flush();
 
-		//$this->sendPdf($investment, 'form');
+		$this->sendPdf($investment, 'form');
 
 		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
 		if (!empty($infoEmail)) {
@@ -267,7 +267,7 @@ class InvestformPresenter extends BasePresenter
 			    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
 			    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
 
-			//$mail->send();
+			$mail->send();
 		}
 
 		$this->redirect('default', array(
@@ -309,7 +309,7 @@ class InvestformPresenter extends BasePresenter
 			$investment->setPostalAddress($address);
 		}
 
-		//$this->sendPdf($investment, 'contract');
+		$this->sendPdf($investment, 'contract');
 		$this->em->flush();
 
 		$this->redirect('default', array(
