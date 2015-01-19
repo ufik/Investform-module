@@ -1,0 +1,11 @@
+{block content}
+	
+	<div class="page-heading">	
+		<h1>{$actualPage->getTitle()}</h1>
+	</div>
+	
+	<a class="btn btn-primary" n:href="update idPage => $idPage">{_'Add businessman'}</a>
+	<a class="btn btn-primary" n:href="activeBusinessmen idPage => $idPage">{_'Active businessmen'}</a>
+	<a class="btn btn-primary" n:href="inactiveBusinessmen idPage => $idPage">{_'Inactive businessmen'}</a>
+
+{/block}

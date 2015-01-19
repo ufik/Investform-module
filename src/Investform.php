@@ -41,6 +41,11 @@ class Investform extends \WebCMS\Module
             'frontend' => true,
             'parameters' => false
         ),
+        array(
+            'name' => 'Businessman',
+            'frontend' => true,
+            'parameters' => true
+        ),
 		array(
 		    'name' => 'Settings',
 		    'frontend' => false
