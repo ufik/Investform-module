@@ -41,7 +41,15 @@ class InvestformPresenter extends BasePresenter
         $grid->addColumnDate('created', 'Created', \Grido\Components\Columns\Date::FORMAT_DATETIME)
             ->setSortable();
         $grid->addColumnNumber('id', 'Contract id')->setSortable();
-        $grid->addColumnText('pin', 'Pin')->setSortable();
+
+        $grid->addColumnText('pin', 'Business Id')->setCustomRender(function($item) {
+            if ($item->getBusinessman()) {
+                return $item->getBusinessman()->getBusinessId();
+            } else {
+                return $item->getPin();
+            }
+        });
+
         $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
             return $item->getAddress()->getName() . ' ' . $item->getAddress()->getLastname();
         });
@@ -55,12 +63,77 @@ class InvestformPresenter extends BasePresenter
         $grid->addColumnText('contract', 'Contract')->setCustomRender(function($item) {
             return $item->getContractSend() ? 'Odesláno' : 'Neodesláno';
         });
+        $grid->addColumnText('clientContacted', 'Client contacted')->setCustomRender(function($item) {
+            return $item->getClientContacted() ? 'Yes' : 'No';
+        });
 
         $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("contacted", 'Contacted', 'contacted', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
+
+        $operations = array('downloadGrid' => 'Download', 'deleteGrid' => 'Delete');
+        $grid->setOperation($operations, $this->handleGridOperations)
+            ->setConfirm('deleteGrid', 'Are you sure you want to delete %i items?');
 
         return $grid;
+    }
+
+    /**
+     * Common handler for grid operations.
+     * @param string $operation
+     * @param array $id
+     */
+    public function handleGridOperations($operation, $id)
+    {
+        if (!$id) {
+            $this->flashMessage('No rows selected.', 'error');
+        }
+
+        $this->forward($operation, array(
+            'idPage' => $this->actualPage->getId(),
+            'id' => $id
+        ));
+    }
+
+    public function actionDownloadGrid()
+    {
+        $rows = $this->getParameter('id');
+
+        // $zipSubfolder = 's' . date('Y-m-d-H-i-s');
+
+        // foreach ($rows as $key => $value) {
+        //     $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($value);
+
+        //     $zip = new PdfPrinter($investment);            
+
+        //     $zip->savePdfToZip($zipSubfolder);
+        // }
+        
+        $this->flashMessage("Done.", 'success');
+
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionDeleteGrid()
+    {
+        $rows = $this->getParameter('id');
+        
+        foreach ($rows as $key => $value) {
+            $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($value);
+
+            $this->em->remove($investment);
+        }
+
+        $this->em->flush();
+
+        $this->flashMessage("Contracts has been deleted", 'success');
+
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     public function createComponentForm($name)
@@ -189,6 +262,19 @@ class InvestformPresenter extends BasePresenter
         $pdfPrinter = new PdfPrinter($investment);
 
         $this->sendResponse($pdfPrinter->printPdfContract(true));
+    }
+
+    public function actionContacted($id, $idPage)
+    {
+        $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
+        $investment->setClientContacted($investment->getClientContacted() ? false : true);
+
+        $this->em->flush();
+
+        $this->flashMessage('Parameter has been changed.', 'success');
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     public function actionDefault($idPage)

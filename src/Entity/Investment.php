@@ -95,6 +95,11 @@ class Investment extends \WebCMS\Entity\Entity
     private $contractSend;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $clientContacted;
+
+    /**
      * @ORM\OneToOne(targetEntity="Businessman") 
      */
     private $businessman;
@@ -445,6 +450,29 @@ class Investment extends \WebCMS\Entity\Entity
     {
         $this->contractSend = $contractSend;
 
+        return $this;
+    }
+
+    /**
+     * Gets the value of clientContacted.
+     *
+     * @return mixed
+     */
+    public function getClientContacted()
+    {
+        return $this->clientContacted;
+    }
+    
+    /**
+     * Sets the value of clientContacted.
+     *
+     * @param mixed $clientContacted the client contacted
+     *
+     * @return self
+     */
+    public function setClientContacted($clientContacted)
+    {
+        $this->clientContacted = $clientContacted;
         return $this;
     }
 

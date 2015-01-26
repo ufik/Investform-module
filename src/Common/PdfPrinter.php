@@ -77,6 +77,47 @@ class PdfPrinter
 		return $this->processPdf($response, $templatePath, $fieldData, $this->investment, $this->investment->getContractHash());
 	}
 
+	public function savePdfToZip($subfolder)
+	{
+		//TODO refactor to one function
+		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getRealInvestmentLength());
+		
+		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis.pdf";
+		$bNumber = $this->investment->getBirthdateNumber();
+		$postalAddress = ($this->investment->getPostalAddress() ? $this->investment->getPostalAddress()->getName() . ' ' . $this->investment->getPostalAddress()->getLastname() . ', ' . $this->investment->getPostalAddress()->getAddressString() : '-');
+
+		$company = $this->investment->getCompany();
+		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
+		$id = (!empty($bNumber) ? str_replace('/', '', $bNumber) : $this->investment->getRegistrationNumber());
+		$fieldData = array(
+		    'name' => $name,
+		    'identificationNumber' => $id,
+		    'address' => $this->investment->getAddress()->getAddressString(),
+		    'mailingAddress' => $postalAddress,
+		    'bankAccountNumber' => $this->investment->getBankAccount(),
+		    'email' => $this->investment->getEmail(),
+		    'paymentAmount' => number_format($fvoa->getPurchaseAmount(), 0, ',', '.') . ',- Kč',
+		    'paymentBankAccount' => '2110773767/2700', // TODO move to settings
+		    'telephoneNumber' => $this->investment->getPhone(),
+		    'paymentVariableSymbol' => $id,
+			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
+			'pin' => $this->investment->getPin()
+		);
+
+		$pdf = new \FPDM($templatePath);
+		$pdf->Load($fieldData, true); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
+		$pdf->Merge();
+
+		$contractPath = WWW_DIR . '/upload/contracts/' . $subfolder;
+		if (!file_exists($contractPath)) {
+			mkdir($contractPath);
+		}
+
+		$output = $this->getPdfContent($pdf);
+		file_put_contents($contractPath . '/' . $this->investment->getContractHash() . '.pdf', $output);
+
+	}
+
 	private function processPdf($response, $templatePath, $fieldData, $investment, $hash)
 	{
 		$pdf = new \FPDM($templatePath);
@@ -117,4 +158,6 @@ class PdfPrinter
 
 		return $pdf;
 	}
+
+
 }
