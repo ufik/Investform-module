@@ -211,10 +211,8 @@ class BusinessmanPresenter extends BasePresenter
                 if (!$businessman) $exists = false;
             }
 
-            $form->addText('businessIdDisabled', 'Generated businessman ID')
-                ->setValue($businessId)
-                ->setDisabled();
-            $form->addHidden('businessId', $businessId);
+            $form->addText('businessId', 'Generated businessman ID')
+                ->setValue($businessId);
 
             $businessUrl = bin2hex(mcrypt_create_iv(10, MCRYPT_DEV_URANDOM));
             $form->addText('businessUrlDisabled', 'Generated businessman URL')

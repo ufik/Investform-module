@@ -251,6 +251,13 @@ class InvestformPresenter extends BasePresenter
 		$investment->setAddress($address);
 		$investment->setBankAccount(str_replace('_', '', $values->bankAccount));
 
+		if (isset($this->businessmanSession->id)) {
+			$businessman = $this->em->getRepository('WebCMS\InvestformModule\Entity\Businessman')->find($this->businessmanSession->id);
+			$investment->setBusinessman($businessman);
+		} else {
+			$investment->setPin($values->pin);
+		}
+
 		$this->em->persist($investment);
 		$this->em->flush();
 
