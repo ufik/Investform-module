@@ -203,5 +203,56 @@ class CompanyPresenter extends BasePresenter
         ));
     }
 
+    protected function createComponentInvestmentsGrid($name)
+    {
+
+        $businessmenIds = array();
+        $investments = array();
+
+        if ($this->businessmen) {
+            foreach ($this->businessmen as $businessman) {
+                $businessmenIds[] = $businessman->getId();
+            }
+        }
+
+        if (count($businessmenIds)) {
+            $investments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' =>  $businessmenIds
+            ));
+        }
+
+        $grid = new \Grido\Grid($this, $name);
+        $grid->setModel($investments);
+
+        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
+
+        $grid->addFilterDateRange('created', 'Created');
+
+        $grid->addColumnDate('created', 'Created')->setDateFormat(\Grido\Components\Columns\Date::FORMAT_DATETIME);
+
+        $grid->addColumnText('client_name', 'Client name')->setCustomRender(function($item) {
+            return $item->getAddress()->getName().' '.$item->getAddress()->getLastname();
+        });
+
+        $grid->addColumnText('businessman_name', 'Businessman name')->setCustomRender(function($item) {
+            return $item->getBusinessman()->getName().' '.$item->getBusinessman()->getLastname();
+        });
+
+        $grid->addColumnText('businessId', 'Business Id')->setCustomRender(function($item) {
+            return $item->getBusinessman()->getBusinessId();
+        });
+
+        $grid->addColumnText('investment', 'Investment');
+        $grid->addColumnText('conractSend', 'Conract send')->setCustomRender(function($item) {
+            if ($item->getContractSend()) {
+                return 'Yes';
+            } else {
+                return 'No';
+            }
+        });
+
+        return $grid;
+    }
+
     
 }
