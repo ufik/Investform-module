@@ -24,6 +24,8 @@ class CompanyPresenter extends BasePresenter
 
     private $companies;
 
+    private $businessmen;
+
     protected function startup()
     {
     	parent::startup();
@@ -45,6 +47,23 @@ class CompanyPresenter extends BasePresenter
     	$this->template->idPage = $idPage;
     }
 
+    protected function createComponentCompanyGrid($name)
+    {
+        $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Company");
+
+        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
+
+        $grid->addColumnText('name', 'Name')->setSortable();
+
+        $grid->addColumnText('street', 'Street and number')->setSortable();
+
+        $grid->addColumnText('zipCity', 'Zip and city')->setSortable();
+
+        $grid->addActionHref("detail", 'Company detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+
+        return $grid;
+    }
+
     public function actionUpdate($id, $idPage)
     {
         if ($id) {
@@ -64,15 +83,16 @@ class CompanyPresenter extends BasePresenter
         $form = $this->createForm('form-submit', 'default', null);
 
         $form->addText('name', 'Name')->setRequired('Name is mandatory.');
-        $form->addText('lastname', 'Lastname')->setRequired('Lastname is mandatory.');
-        $form->addText('street', 'Street and number')->setRequired('Street and number is mandatory.');
-        $form->addText('zipCity', 'Zip and city')->setRequired('Zip and city is mandatory.');
+        $form->addText('street', 'Street and number');
+        $form->addText('zipCity', 'Zip and city');
+        $form->addText('ico', 'Ico');
+        $form->addText('dic', 'Dic');
         $form->addText('email', 'Email')
             ->addRule(Form::EMAIL, 'This email is not valid.')
             ->setRequired('Email is mandatory.');
         $form->addText('phone', 'Phone')->setRequired('Phone is mandatory.');
 
-        $form->addSubmit('save', 'Save new businessman');
+        $form->addSubmit('save', 'Save new company');
 
         $form->onSuccess[] = callback($this, 'formSubmitted');
 
@@ -89,9 +109,10 @@ class CompanyPresenter extends BasePresenter
         }
 
         $this->company->setName($values->name);
-        $this->company->setLastname($values->lastname);
         $this->company->setStreet($values->street);
         $this->company->setZipCity($values->zipCity);
+        $this->company->setIco($values->ico);
+        $this->company->setDic($values->dic);
         $this->company->setEmail($values->email);
         $this->company->setPhone($values->phone);     
 
@@ -99,15 +120,14 @@ class CompanyPresenter extends BasePresenter
 
         $this->flashMessage('Company has been updated.', 'success');
 
-        $this->forward('detail', array(
-            'id' => $this->company->getId(),
+        $this->forward('default', array(
             'idPage' => $this->actualPage->getId()
         ));
     }
 
     public function actionDetail($id, $idPage)
     {
-        $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->find($id);
+        $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($id);
     }
 
     public function renderDetail($idPage)

@@ -185,6 +185,16 @@ class BusinessmanPresenter extends BasePresenter
             ->setRequired('Email is mandatory.');
         $form->addText('phone', 'Phone')->setRequired('Phone is mandatory.');
 
+        $companies = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->findAll();
+        $companiesForSelect = array();
+        if ($companies) {
+            foreach ($companies as $company) {
+                $companiesForSelect[$company->getId()] = $company->getName();
+            }
+        }
+
+        $form->addSelect('company', 'Company')->setItems($companiesForSelect);
+
         if ($this->businessman) {
             $form->setDefaults($this->businessman->toArray());
 

@@ -70,6 +70,11 @@ class Businessman extends \WebCMS\Entity\Entity
      */
     private $created;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Company") 
+     */
+    private $company;
+
 
     public function getName()
     {
@@ -178,6 +183,17 @@ class Businessman extends \WebCMS\Entity\Entity
     public function setCreated($created)
     {
         $this->created = $created;
+        return $this;
+    }
+
+    public function getCompany()
+    {
+        return $this->company;
+    }
+    
+    public function setCompany($company)
+    {
+        $this->company = $company;
         return $this;
     }
 
