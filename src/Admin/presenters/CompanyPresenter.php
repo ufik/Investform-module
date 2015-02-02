@@ -92,6 +92,10 @@ class CompanyPresenter extends BasePresenter
             ->setRequired('Email is mandatory.');
         $form->addText('phone', 'Phone')->setRequired('Phone is mandatory.');
 
+        if ($this->company) {
+            $form->setDefaults($this->company->toArray());
+        }
+
         $form->addSubmit('save', 'Save new company');
 
         $form->onSuccess[] = callback($this, 'formSubmitted');
@@ -103,7 +107,7 @@ class CompanyPresenter extends BasePresenter
     {
         $values = $form->getValues();
 
-        if(!$this->company){
+        if (!$this->company) {
             $this->company = new Company;
             $this->em->persist($this->company);
         }
@@ -120,7 +124,8 @@ class CompanyPresenter extends BasePresenter
 
         $this->flashMessage('Company has been updated.', 'success');
 
-        $this->forward('default', array(
+        $this->forward('detail', array(
+            'id' => $this->company->getId(),
             'idPage' => $this->actualPage->getId()
         ));
     }
@@ -128,13 +133,74 @@ class CompanyPresenter extends BasePresenter
     public function actionDetail($id, $idPage)
     {
         $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($id);
+        $this->businessmen = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findBy(array(
+            'company' => $this->company
+        ));
     }
 
     public function renderDetail($idPage)
     {
         $this->reloadContent();
         $this->template->idPage = $idPage;
+        $this->template->businessmen = $this->businessmen;
         $this->template->company = $this->company;
+    }
+
+    protected function createComponentBusinessmenGrid($name)
+    {
+
+        $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Businessman", null, array(
+            'company = '.$this->company->getId()
+        ));
+
+        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
+
+        $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
+            return $item->getName() . ' ' . $item->getLastname();
+        });
+
+        $grid->addColumnText('businessId', 'Business ID');
+
+        $grid->addColumnText('company', 'Company')->setCustomRender(function($item) {
+            if ($item->getCompany()) {
+                return $item->getCompany()->getName();
+            }
+        });
+
+        $grid->addColumnText('active', 'Active')->setCustomRender(function($item) {
+            if ($item->getActive()) {
+                return 'Yes';
+            } else {
+                return 'No';
+            }
+        });
+
+        $grid->addActionHref("changeActive", 'Change active state', 'changeActive', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
+        $grid->addActionHref("businessmanDetail", 'Businessman detail', 'businessmanDetail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+
+        return $grid;
+    }
+
+    public function actionChangeActive($id, $idPage)
+    {
+        $businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->find($id);
+        $businessman->setActive($businessman->getActive() ? false : true);
+
+        $this->em->flush();
+
+        $this->flashMessage('Active state has been changed', 'success');
+        $this->forward('detail', array(
+            'id' => $businessman->getCompany()->getId(),
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionBusinessmanDetail($id, $idPage)
+    {
+        $this->forward('Businessman:detail', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     

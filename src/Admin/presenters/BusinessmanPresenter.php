@@ -89,6 +89,12 @@ class BusinessmanPresenter extends BasePresenter
 
         $grid->addColumnText('businessId', 'Business ID');
 
+        $grid->addColumnText('company', 'Company')->setCustomRender(function($item) {
+            if ($item->getCompany()) {
+                return $item->getCompany()->getName();
+            }
+        });
+
         $grid->addActionHref("deactivate", 'Deactivate', 'deactivate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
 
@@ -108,6 +114,12 @@ class BusinessmanPresenter extends BasePresenter
         });
 
         $grid->addColumnText('businessId', 'Business ID');
+
+        $grid->addColumnText('company', 'Company')->setCustomRender(function($item) {
+            if ($item->getCompany()) {
+                return $item->getCompany()->getName();
+            }
+        });
 
         $grid->addActionHref("activate", 'Activate', 'activate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));

@@ -1,0 +1,26 @@
+{block content}
+	
+	<br />
+	<a n:href="default idPage => $idPage" class="">{_'Back to companies'}</a>
+
+	<div class="row control-group">
+
+		<h1>{$company->getName()}</h1>
+
+		<p>
+			{$company->getStreet()}<br />
+			{$company->getZipCity()}<br />
+			{$company->getPhone()}<br />
+			{$company->getEmail()}<br />
+
+			<a n:href="update id => $company->getId(), idPage => $idPage" class="">{_'Update'}</a>
+		</p>
+		
+		<h2>{_'Businessmen'}</h2>
+		{control businessmenGrid}
+
+		<h2>{_'Investments'}</h2>
+
+	</div>
+
+{/block}
