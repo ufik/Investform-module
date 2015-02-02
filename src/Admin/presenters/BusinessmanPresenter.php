@@ -9,6 +9,7 @@ namespace AdminModule\InvestformModule;
 
 use Nette\Forms\Form;
 use WebCMS\InvestformModule\Entity\Businessman;
+use WebCMS\InvestformModule\Entity\Company;
 use WebCMS\InvestformModule\Entity\Investment;
 
 /**
@@ -188,6 +189,7 @@ class BusinessmanPresenter extends BasePresenter
         $companies = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->findAll();
         $companiesForSelect = array();
         if ($companies) {
+            $companiesForSelect[] = "";
             foreach ($companies as $company) {
                 $companiesForSelect[$company->getId()] = $company->getName();
             }
@@ -255,6 +257,9 @@ class BusinessmanPresenter extends BasePresenter
         $this->businessman->setZipCity($values->zipCity);
         $this->businessman->setEmail($values->email);
         $this->businessman->setPhone($values->phone);
+
+        $company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($values->company);
+        $this->businessman->setCompany($company);
 
         $this->businessman->setBusinessId($values->businessId);
         $this->businessman->setBusinessUrl($values->businessUrl);        

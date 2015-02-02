@@ -71,7 +71,7 @@ class Businessman extends \WebCMS\Entity\Entity
     private $created;
 
     /**
-     * @ORM\OneToOne(targetEntity="Company") 
+     * @ORM\ManyToOne(targetEntity="Company") 
      */
     private $company;
 
