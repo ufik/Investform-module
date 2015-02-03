@@ -4,8 +4,10 @@
 		<h1>{$actualPage->getTitle()}</h1>
 	</div>
 	
-	<a class="btn btn-primary" n:href="update idPage => $idPage">{_'Add businessman'}</a>
-	<a class="btn btn-primary" n:href="activeBusinessmen idPage => $idPage">{_'Active businessmen'}</a>
-	<a class="btn btn-primary" n:href="inactiveBusinessmen idPage => $idPage">{_'Inactive businessmen'}</a>
+	<div class="control-group">
+		<a class="btn-square add" n:href="update idPage => $idPage"><span>{_'Add businessman'}</span></a>
+		<a class="btn-square active" n:href="activeBusinessmen idPage => $idPage"><span>{_'Active businessmen'}</span></a>
+		<a class="btn-square inactive" n:href="inactiveBusinessmen idPage => $idPage"><span>{_'Inactive businessmen'}</span></a>
+	</div>
 
 {/block}

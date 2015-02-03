@@ -59,7 +59,7 @@ class CompanyPresenter extends BasePresenter
 
         $grid->addColumnText('zipCity', 'Zip and city')->setSortable();
 
-        $grid->addActionHref("detail", 'Company detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("detail", 'Company detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'green')));
 
         return $grid;
     }
@@ -175,8 +175,8 @@ class CompanyPresenter extends BasePresenter
             }
         });
 
-        $grid->addActionHref("changeActive", 'Change active state', 'changeActive', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("businessmanDetail", 'Businessman detail', 'businessmanDetail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("changeActive", 'Change active state', 'changeActive', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
+        $grid->addActionHref("businessmanDetail", 'Businessman detail', 'businessmanDetail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'green')));
 
         return $grid;
     }
@@ -251,7 +251,35 @@ class CompanyPresenter extends BasePresenter
             }
         });
 
+        $grid->addActionHref("sendContract", 'Send', 'sendContract', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'purple')));
+        $grid->addActionHref("downloadContract", 'Download', 'downloadContract', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'purple')));
+        $grid->addActionHref("updateContract", 'Edit', 'updateContract', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
+
         return $grid;
+    }
+
+    public function actionUpdateContract($id, $idPage)
+    {
+        $this->forward('Investform:update', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionDownloadContract($id, $idPage)
+    {
+        $this->forward('Investform:download', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionSendContract($id, $idPage)
+    {
+        $this->forward('Investform:send', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     

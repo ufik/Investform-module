@@ -72,9 +72,9 @@ class InvestformPresenter extends BasePresenter
         $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
         $grid->addActionHref("contacted", 'Contacted', 'contacted', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
 
-        $operations = array('downloadGrid' => 'Download', 'deleteGrid' => 'Delete');
-        $grid->setOperation($operations, $this->handleGridOperations)
-            ->setConfirm('deleteGrid', 'Are you sure you want to delete %i items?');
+        // $operations = array('downloadGrid' => 'Download', 'deleteGrid' => 'Delete');
+        // $grid->setOperation($operations, $this->handleGridOperations)
+        //     ->setConfirm('deleteGrid', 'Are you sure you want to delete %i items?');
 
         return $grid;
     }

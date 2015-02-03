@@ -1,7 +1,12 @@
 {block content}
 
-	<br />
-	<a n:href="default idPage => $idPage" class="">{_'Back to companies'}</a>
+	<div class="page-heading">	
+		<h1>{_'Add/edit company'}</h1>
+	</div>
+
+	<div class="control-group">
+		<a n:href="default idPage => $idPage" class="back">{_'Back to companies'}</a>
+	</div>
 
 	{control form}
 

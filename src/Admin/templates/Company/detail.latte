@@ -1,23 +1,38 @@
 {block content}
-	
-	<br />
-	<a n:href="default idPage => $idPage" class="">{_'Back to companies'}</a>
+
+	<div class="page-heading">	
+		<a n:href="default idPage => $idPage" class="back">{_'Back to companies'}</a>
+
+		<h1>{$company->getName()}</h1>
+	</div>
 
 	<div class="row control-group">
 
-		<h1>{$company->getName()}</h1>
+		<div class="col-md-6">
+			
+			<div class="contactInfo">
+				<p>
+					{$company->getStreet()}<br />
+					{$company->getZipCity()}<br />
+					{$company->getPhone()}<br />
+					{$company->getEmail()}
+				</p>
 
-		<p>
-			{$company->getStreet()}<br />
-			{$company->getZipCity()}<br />
-			{$company->getPhone()}<br />
-			{$company->getEmail()}<br />
+				<a n:href="update id => $company->getId(), idPage => $idPage" class="btn btn-primary green btn btn-default btn-xs btn-mini">{_'Update'}</a>
+			</div>
 
-			<a n:href="update id => $company->getId(), idPage => $idPage" class="">{_'Update'}</a>
-		</p>
+		</div>
+
+	</div>
+
+	<div class="row control-group">
 		
 		<h2>{_'Businessmen'}</h2>
 		{control businessmenGrid}
+
+	</div>
+
+	<div class="row control-group">
 
 		<h2>{_'Investments'}</h2>
 		{control investmentsGrid}

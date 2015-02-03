@@ -3,9 +3,12 @@
 	<div class="page-heading">	
 		<h1>{$actualPage->getTitle()}</h1>
 	</div>
-	
-	<a class="btn btn-primary" n:href="update idPage => $idPage">{_'Add company'}</a>
+	<br />
+	<div class="control-group">
+		<a class="btn btn-primary green" n:href="update idPage => $idPage">{_'Add company'}</a>
 
-	{control companyGrid}
+		{control companyGrid}
+
+	</div>
 
 {/block}

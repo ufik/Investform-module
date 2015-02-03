@@ -26,6 +26,14 @@ class BusinessmanPresenter extends BasePresenter
 
     private $investments;
 
+    private $openInvestments;
+
+    private $openInvestmentsAmount;
+
+    private $closedInvestments;
+
+    private $closedInvestmentsAmount;
+
     protected function startup()
     {
     	parent::startup();
@@ -58,6 +66,7 @@ class BusinessmanPresenter extends BasePresenter
 
     public function renderActiveBusinessmen($idPage)
     {
+        $this->template->idPage = $idPage;
         $this->template->numberOfBusinessmen = count($this->businessmen);
     }
 
@@ -72,6 +81,7 @@ class BusinessmanPresenter extends BasePresenter
 
     public function renderInactiveBusinessmen($idPage)
     {
+        $this->template->idPage = $idPage;
         $this->template->numberOfBusinessmen = count($this->businessmen);
     }
 
@@ -95,8 +105,8 @@ class BusinessmanPresenter extends BasePresenter
             }
         });
 
-        $grid->addActionHref("deactivate", 'Deactivate', 'deactivate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("deactivate", 'Deactivate', 'deactivate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'grey')));
+        $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'green')));
 
         return $grid;
     }
@@ -121,8 +131,8 @@ class BusinessmanPresenter extends BasePresenter
             }
         });
 
-        $grid->addActionHref("activate", 'Activate', 'activate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("activate", 'Activate', 'activate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'grey')));
+        $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'green')));
 
         return $grid;
     }
@@ -235,7 +245,7 @@ class BusinessmanPresenter extends BasePresenter
                 if (!$businessman) $exists = false;
             }
 
-            $form->addText('businessId', 'Generated businessman ID')
+            $form->addText('businessIdDisabled', 'Generated businessman ID')
                 ->setValue($businessId);
 
             $businessUrl = bin2hex(mcrypt_create_iv(10, MCRYPT_DEV_URANDOM));
@@ -273,7 +283,12 @@ class BusinessmanPresenter extends BasePresenter
         $company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($values->company);
         $this->businessman->setCompany($company);
 
-        $this->businessman->setBusinessId($values->businessId);
+        if (isset($values->businessId)) {
+            $this->businessman->setBusinessId($values->businessId);
+        } else {
+            $this->businessman->setBusinessId($values->businessIdDisabled);
+        }
+        
         $this->businessman->setBusinessUrl($values->businessUrl);        
 
         $this->em->flush();
@@ -292,6 +307,24 @@ class BusinessmanPresenter extends BasePresenter
         $this->investments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
             'businessman' => $this->businessman
         ));
+
+        $this->openInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            'businessman' => $this->businessman,
+            'contractSend' => false
+        ));
+        $this->openInvestmentsAmount = 0;
+        foreach ($this->openInvestments as $investment) {
+            $this->openInvestmentsAmount += $investment->getInvestment();
+        }
+
+        $this->closedInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            'businessman' => $this->businessman,
+            'contractSend' => true
+        ));
+        $this->closedInvestmentsAmount = 0;
+        foreach ($this->closedInvestments as $investment) {
+            $this->closedInvestmentsAmount += $investment->getInvestment();
+        }
     }
 
     public function renderDetail($idPage)
@@ -301,6 +334,10 @@ class BusinessmanPresenter extends BasePresenter
         $this->template->urlCode = $this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode=';
         $this->template->businessman = $this->businessman;
         $this->template->investments = $this->investments;
+        $this->template->openInvestments = count($this->openInvestments);
+        $this->template->closedInvestments = count($this->closedInvestments);
+        $this->template->openInvestmentsAmount = $this->openInvestmentsAmount;
+        $this->template->closedInvestmentsAmount = $this->closedInvestmentsAmount;
     }
 
     protected function createComponentInvestmentsGrid($name)
@@ -330,11 +367,35 @@ class BusinessmanPresenter extends BasePresenter
         });
 
         
-
-        // $grid->addActionHref("activate", 'Activate', 'activate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        // $grid->addActionHref("detail", 'Businessman detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
+        $grid->addActionHref("sendContract", 'Send', 'sendContract', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'purple')));
+        $grid->addActionHref("downloadContract", 'Download', 'downloadContract', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'purple')));
+        $grid->addActionHref("updateContract", 'Edit', 'updateContract', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
 
         return $grid;
+    }
+
+    public function actionUpdateContract($id, $idPage)
+    {
+        $this->forward('Investform:update', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionDownloadContract($id, $idPage)
+    {
+        $this->forward('Investform:download', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionSendContract($id, $idPage)
+    {
+        $this->forward('Investform:send', array(
+            'id' => $id,
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     

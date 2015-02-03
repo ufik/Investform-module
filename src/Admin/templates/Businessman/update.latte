@@ -1,8 +1,81 @@
 {block content}
 
-	<br />
-	<a n:href="activeBusinessmen idPage => $idPage" class="">{_'Back to active businessmen'}</a>
+	<div class="page-heading">	
+		<h1>{_'Add/edit businessman'}</h1>
+	</div>
 
-	{control form}
+	<div class="control-group">
+		<a n:href="activeBusinessmen idPage => $idPage" class="back">{_'Back to active businessmen'}</a>
+	</div>
+
+	{form form}
+
+		<div class="control-group row">
+
+			<div class="col-md-6">
+
+				<div class="form-group">
+					{label name /}
+					{input name class => 'form-control'}
+		        </div>
+
+		        <div class="form-group">
+					{label lastname /}
+					{input lastname class => 'form-control'}
+		        </div>
+
+		        <div class="form-group">
+					{label company /}
+					{input company class => 'form-control'}
+		        </div>
+
+		        <div class="form-group">
+					{label street /}
+					{input street class => 'form-control'}
+		        </div>
+
+		        <div class="form-group">
+					{label zipCity /}
+					{input zipCity class => 'form-control'}
+		        </div>
+
+		        <div class="form-group">
+					{label email /}
+					{input email class => 'form-control'}
+		        </div>
+
+		        <div class="form-group">
+					{label phone /}
+					{input phone class => 'form-control'}
+		        </div>
+
+	        </div>
+
+	        <div class="col-md-6">
+
+	        	<div class="form-group">
+					{label businessIdDisabled /}
+					{input businessIdDisabled class => 'form-control green'}
+		        </div>				
+
+		        <div class="form-group">
+					{label businessUrlDisabled /}
+					{input businessUrlDisabled class => 'form-control green'}
+		        </div>
+
+		        <p class="info">{_'ID obchodníka a URL kód pro affiliate program bude zaslán přímo obchodníkovi na jeho registrační e-mail.'}</p>
+
+	        </div>
+
+        </div>
+
+        <div class="form-actions">
+
+			{input save class => 'btn btn-success'}
+
+		</div>
+
+
+	{/form}
 
 {/block}

@@ -1,33 +1,62 @@
-{block content}
+{block content}	
+
+	<div class="page-heading">	
+		{if $businessman->getActive()}
+			<a n:href="activeBusinessmen idPage => $idPage" class="back">{_'Back to active businessmen'}</a>
+		{else}
+			<a n:href="inactiveBusinessmen idPage => $idPage" class="back">{_'Back to inactive businessmen'}</a>
+		{/if}
+		<h1 class="float-l">{$businessman->getName()} {$businessman->getLastname()}</h1>
+
+		
+		<div class="changeActiveStatus float-r">
+			<span>{$businessman->getBusinessId()}</span>
+			{if $businessman->getActive()}
+				<a n:href="deactivate id => $businessman->getId(), idPage => $idPage, inDetail => true" class="btn btn-primary ajax grey btn btn-default btn-xs btn-mini">{_'Deactivate'}</a>
+			{else}
+				<a n:href="activate id => $businessman->getId(), idPage => $idPage, inDetail => true" class="btn btn-primary ajax grey btn btn-default btn-xs btn-mini">{_'Activate'}</a>
+			{/if}
+		</div>
+
+		<span class="url float-r"><strong>URL:</strong> {$urlCode}{$businessman->getBusinessUrl()}</span>
+
+		<div class="clear"></div>
+	</div>
+
 	
-	<br />
-	{if $businessman->getActive()}
-		<a n:href="activeBusinessmen idPage => $idPage" class="">{_'Back to active businessmen'}</a>
-	{else}
-		<a n:href="inactiveBusinessmen idPage => $idPage" class="">{_'Back to inactive businessmen'}</a>
-	{/if}
 
 	<div class="row control-group">
-		<h1>{$businessman->getName()} {$businessman->getLastname()}</h1>
 
-		<p>URL: {$urlCode}{$businessman->getBusinessUrl()}
-		</p>
-		<p>ID: {$businessman->getBusinessId()}</p>
+		<div class="col-md-6">
+			
+			<div class="contactInfo">
+				<p>
+					{$businessman->getStreet()}<br />
+					{$businessman->getZipCity()}<br />
+					{$businessman->getPhone()}<br />
+					{$businessman->getEmail()}
+				</p>
 
-		{if $businessman->getActive()}
-			<a n:href="deactivate id => $businessman->getId(), idPage => $idPage, inDetail => true" class="">{_'Deactivate'}</a>
-		{else}
-			<a n:href="activate id => $businessman->getId(), idPage => $idPage, inDetail => true" class="">{_'Activate'}</a>
-		{/if}
+				<p><a n:href="update id => $businessman->getId(), idPage => $idPage" class="btn btn-primary green btn btn-default btn-xs btn-mini">{_'Update'}</a></p>
+			</div>
 
-		<p>
-			{$businessman->getStreet()}<br />
-			{$businessman->getZipCity()}<br />
-			{$businessman->getPhone()}<br />
-			{$businessman->getEmail()}<br />
+		</div>
 
-			<a n:href="update id => $businessman->getId(), idPage => $idPage" class="">{_'Update'}</a>
-		</p>
+		<div class="col-md-6">
+			
+			<div class="float-l">
+				<p class="headTitle">{_'Open investments'}</p>
+				<p class="numberOfInvestments">{$openInvestments}</p>
+				<p class="investmentsAmount">{_'Total'} {$openInvestmentsAmount} Kč</p>
+			</div>
+
+			<div class="float-r">
+				<p class="headTitle">{_'Closed investments'}</p>
+				<p class="numberOfInvestments">{$closedInvestments}</p>
+				<p class="investmentsAmount">{_'Total'} {$closedInvestmentsAmount} Kč</p>
+			</div>
+
+		</div>
 
 	</div>
 
