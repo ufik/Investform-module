@@ -47,9 +47,41 @@ class CompanyPresenter extends BasePresenter
     	$this->template->idPage = $idPage;
     }
 
-    protected function createComponentCompanyGrid($name)
+    public function actionActiveCompanies($idPage)
     {
-        $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Company");
+        $this->reloadContent();
+
+        $this->companies = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->findBy(array(
+            'active' => true
+        ));
+    }
+
+    public function renderActiveCompanies($idPage)
+    {
+        $this->template->idPage = $idPage;
+        $this->template->numberOfCompanies = count($this->companies);
+    }
+
+    public function actionInactiveCompanies($idPage)
+    {
+        $this->reloadContent();
+
+        $this->companies = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->findBy(array(
+            'active' => false
+        ));
+    }
+
+    public function renderInactiveCompanies($idPage)
+    {
+        $this->template->idPage = $idPage;
+        $this->template->numberOfCompanies = count($this->companies);
+    }
+
+    protected function createComponentActiveGrid($name)
+    {
+        $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Company", null, array(
+            'active = true',
+        ));
 
         $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
 
@@ -59,10 +91,96 @@ class CompanyPresenter extends BasePresenter
 
         $grid->addColumnText('zipCity', 'Zip and city')->setSortable();
 
+        $grid->addActionHref("deactivate", 'Deactivate', 'deactivate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'grey')));
         $grid->addActionHref("detail", 'Company detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'green')));
 
         return $grid;
     }
+
+    protected function createComponentInactiveGrid($name)
+    {
+        $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Company", null, array(
+            'active = false',
+        ));
+
+        $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
+
+        $grid->addColumnText('name', 'Name')->setSortable();
+
+        $grid->addColumnText('street', 'Street and number')->setSortable();
+
+        $grid->addColumnText('zipCity', 'Zip and city')->setSortable();
+
+        $grid->addActionHref("activate", 'Activate', 'activate', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'grey')));
+        $grid->addActionHref("detail", 'Company detail', 'detail', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'green')));
+
+        return $grid;
+    }
+
+    public function actionDeactivate($id, $idPage, $inDetail = false)
+    {
+
+        $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($id);
+        $this->company->setActive(false);
+
+        $this->businessmen = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findBy(array(
+            'company' => $this->company
+        ));
+
+        if ($this->businessmen) {
+            foreach ($this->businessmen as $businessman) {
+                $businessman->setActive(false);
+            }
+        }
+
+        $this->em->flush();
+
+        $this->flashMessage('Company has been deactivated', 'success');
+
+        if ($inDetail) {
+            $this->forward('detail', array(
+                'id' => $id,
+                'idPage' => $this->actualPage->getId()
+            ));
+        } else {
+            $this->forward('activeCompanies', array(
+                'idPage' => $this->actualPage->getId()
+            ));
+        }
+    }
+
+    public function actionActivate($id, $idPage, $inDetail = false)
+    {
+
+        $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($id);
+        $this->company->setActive(true);
+
+        $this->businessmen = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findBy(array(
+            'company' => $this->company
+        ));
+
+        if ($this->businessmen) {
+            foreach ($this->businessmen as $businessman) {
+                $businessman->setActive(true);
+            }
+        }
+
+        $this->em->flush();
+
+        $this->flashMessage('Company has been activated', 'success');
+
+        if ($inDetail) {
+            $this->forward('detail', array(
+                'id' => $id,
+                'idPage' => $this->actualPage->getId()
+            ));
+        } else {
+            $this->forward('inactiveCompanies', array(
+                'idPage' => $this->actualPage->getId()
+            ));
+        }
+    }
+
 
     public function actionUpdate($id, $idPage)
     {
@@ -119,6 +237,7 @@ class CompanyPresenter extends BasePresenter
         $this->company->setDic($values->dic);
         $this->company->setEmail($values->email);
         $this->company->setPhone($values->phone);     
+        $this->company->setActive(true);    
 
         $this->em->flush();
 
@@ -184,11 +303,32 @@ class CompanyPresenter extends BasePresenter
     public function actionChangeActive($id, $idPage)
     {
         $businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->find($id);
-        $businessman->setActive($businessman->getActive() ? false : true);
 
-        $this->em->flush();
+        if (!$businessman->getActive()) {
 
-        $this->flashMessage('Active state has been changed', 'success');
+            $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($businessman->getCompany()->getId());
+
+            if ($this->company->getActive()) {
+                $businessman->setActive(true);
+
+                $this->em->flush();
+
+                $this->flashMessage('Active state has been changed', 'success');
+            } else {
+
+                $this->flashMessage('Active state cannot be changed. Company is inactive.', 'error');
+            }
+
+        } else {
+            $businessman->setActive(false);
+
+            $this->em->flush();
+
+            $this->flashMessage('Active state has been changed', 'success');
+        }
+
+
+        
         $this->forward('detail', array(
             'id' => $businessman->getCompany()->getId(),
             'idPage' => $this->actualPage->getId()

@@ -1,0 +1,16 @@
+{block content}
+	
+	<div class="page-heading">	
+		<h1>{_'Inactive companies'} <span class="number">{$numberOfCompanies}</span></h1>
+	</div>
+	
+	<div class="control-group">
+		{control inactiveGrid}
+	</div>
+
+	<div class="control-group">
+		<a class="btn-square add" n:href="update idPage => $idPage"><span>{_'Add company'}</span></a>
+		<a class="btn-square active" n:href="activeCompanies idPage => $idPage"><span>{_'Active companies'}</span></a>
+	</div>
+
+{/block}

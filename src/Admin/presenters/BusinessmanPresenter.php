@@ -24,6 +24,8 @@ class BusinessmanPresenter extends BasePresenter
 
     private $businessmen;
 
+    private $company;
+
     private $investments;
 
     private $openInvestments;
@@ -163,11 +165,19 @@ class BusinessmanPresenter extends BasePresenter
     {
 
         $this->businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->find($id);
-        $this->businessman->setActive(true);
 
-        $this->em->flush();
+        $this->company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($this->businessman->getCompany()->getId());
 
-        $this->flashMessage('Businessman has been activated', 'success');
+        if ($this->company->getActive()) {
+            $this->businessman->setActive(true);
+
+            $this->em->flush();
+
+            $this->flashMessage('Businessman has been activated', 'success');
+
+        } else {
+            $this->flashMessage('Active state cannot be changed. Company is inactive.', 'error');
+        }
 
         if ($inDetail) {
             $this->forward('detail', array(

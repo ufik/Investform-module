@@ -1,9 +1,23 @@
 {block content}
 
 	<div class="page-heading">	
-		<a n:href="default idPage => $idPage" class="back">{_'Back to companies'}</a>
+		{if $company->getActive()}
+			<a n:href="activeCompanies idPage => $idPage" class="back">{_'Back to active companies'}</a>
+		{else}
+			<a n:href="inactiveCompanies idPage => $idPage" class="back">{_'Back to inactive companies'}</a>
+		{/if}
 
-		<h1>{$company->getName()}</h1>
+		<h1 class="float-l">{$company->getName()}</h1>
+
+		<div class="changeActiveStatus float-r">
+			{if $company->getActive()}
+				<a n:href="deactivate id => $company->getId(), idPage => $idPage, inDetail => true" class="btn btn-primary ajax grey btn btn-default btn-xs btn-mini">{_'Deactivate'}</a>
+			{else}
+				<a n:href="activate id => $company->getId(), idPage => $idPage, inDetail => true" class="btn btn-primary ajax grey btn btn-default btn-xs btn-mini">{_'Activate'}</a>
+			{/if}
+		</div>
+
+		<div class="clear"></div>
 	</div>
 
 	<div class="row control-group">
