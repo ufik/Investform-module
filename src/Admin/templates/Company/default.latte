@@ -6,8 +6,8 @@
 	<br />
 	<div class="control-group">
 		<a class="btn-square add" n:href="update idPage => $idPage"><span>{_'Add company'}</span></a>
-
-		{control companyGrid}
+		<a class="btn-square active" n:href="activeCompanies idPage => $idPage"><span>{_'Active companies'}</span></a>
+		<a class="btn-square inactive" n:href="inactiveCompanies idPage => $idPage"><span>{_'Inactive companies'}</span></a>
 
 	</div>
 

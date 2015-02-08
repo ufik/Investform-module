@@ -53,6 +53,11 @@ class Company extends \WebCMS\Entity\Entity
     private $phone;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+
+    /**
      * @var datetime $created
      * 
      * @gedmo\Timestampable(on="create")
@@ -151,6 +156,17 @@ class Company extends \WebCMS\Entity\Entity
     public function setPhone($phone)
     {
         $this->phone = $phone;
+        return $this;
+    }
+
+    public function getActive()
+    {
+        return $this->active;
+    }
+    
+    public function setActive($active)
+    {
+        $this->active = $active;
         return $this;
     }
 
