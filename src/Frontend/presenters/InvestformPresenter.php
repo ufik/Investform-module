@@ -67,7 +67,7 @@ class InvestformPresenter extends BasePresenter
 			->addRule(callback($this, 'validateBankAccount'), "Bank acccount is not valid`.");
 		$form->addSelect('investmentAmount', 'Investment amount', $this->amountItems)
 			->setRequired('Amount of investment is mandatory.');
-		$form->addSelect('investmentLength', 'Investment length', array(3 => 3, 5 => 5))
+		$form->addSelect('investmentLength', 'Investment length', array(3 => 'Tříletý', 5 => 'Pětiletý'))
 			->setRequired('Investment length is mandatory.');
 
 		$form->addSubmit('send', 'Send');
@@ -249,13 +249,17 @@ class InvestformPresenter extends BasePresenter
 		$investment->setRegistrationNumber($values->registrationNumber);
 		$investment->setCompany($values->company);
 		$investment->setAddress($address);
-		$investment->setBankAccount(str_replace('_', '', $values->bankAccount));
+
+		if (!empty($values->bankAccountPrefix)) {
+			$bankAccount = str_replace('_', '', $values->bankAccountPrefix).'-'.str_replace('_', '', $values->bankAccount);
+		} else {
+			$bankAccount = str_replace('_', '', $values->bankAccount);
+		}
+		$investment->setBankAccount($bankAccount);
 
 		if (isset($this->businessmanSession->id)) {
 			$businessman = $this->em->getRepository('WebCMS\InvestformModule\Entity\Businessman')->find($this->businessmanSession->id);
 			$investment->setBusinessman($businessman);
-		} else {
-			$investment->setPin($values->pin);
 		}
 
 		$this->em->persist($investment);
@@ -264,7 +268,7 @@ class InvestformPresenter extends BasePresenter
 		$investment->getHash();
 		$this->em->flush();
 
-		$this->sendPdf($investment, 'form');
+		//$this->sendPdf($investment, 'form');
 
 		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
 		if (!empty($infoEmail)) {
@@ -274,7 +278,7 @@ class InvestformPresenter extends BasePresenter
 			    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
 			    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
 
-			$mail->send();
+			//$mail->send();
 		}
 
 		$this->redirect('default', array(
@@ -316,7 +320,7 @@ class InvestformPresenter extends BasePresenter
 			$investment->setPostalAddress($address);
 		}
 
-		$this->sendPdf($investment, 'contract');
+		//$this->sendPdf($investment, 'contract');
 		$this->em->flush();
 
 		$this->redirect('default', array(
