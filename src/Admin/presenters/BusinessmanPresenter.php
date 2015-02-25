@@ -95,7 +95,7 @@ class BusinessmanPresenter extends BasePresenter
 
         $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
 
-        $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
+        $grid->addColumnText('name', 'Firstname')->setCustomRender(function($item) {
             return $item->getName() . ' ' . $item->getLastname();
         });
 
@@ -121,7 +121,7 @@ class BusinessmanPresenter extends BasePresenter
 
         $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
 
-        $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
+        $grid->addColumnText('name', 'Firstname')->setCustomRender(function($item) {
             return $item->getName() . ' ' . $item->getLastname();
         });
 
@@ -209,7 +209,7 @@ class BusinessmanPresenter extends BasePresenter
     {
         $form = $this->createForm('form-submit', 'default', null);
 
-        $form->addText('name', 'Name')->setRequired('Name is mandatory.');
+        $form->addText('name', 'Firstname')->setRequired('Firstname is mandatory.');
         $form->addText('lastname', 'Lastname')->setRequired('Lastname is mandatory.');
         $form->addText('street', 'Street and number')->setRequired('Street and number is mandatory.');
         $form->addText('zipCity', 'Zip and city')->setRequired('Zip and city is mandatory.');
