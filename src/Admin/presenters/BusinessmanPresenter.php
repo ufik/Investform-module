@@ -471,8 +471,15 @@ class BusinessmanPresenter extends BasePresenter
         });
 
         $grid->addColumnText('investment', 'Investment');
-        $grid->addColumnText('conractSend', 'Conract send')->setCustomRender(function($item) {
+        $grid->addColumnText('contractSend', 'Contract send')->setCustomRender(function($item) {
             if ($item->getContractSend()) {
+                return 'Yes';
+            } else {
+                return 'No';
+            }
+        });
+        $grid->addColumnText('contractPaid', 'Contract paid')->setCustomRender(function($item) {
+            if ($item->getContractPaid()) {
                 return 'Yes';
             } else {
                 return 'No';
