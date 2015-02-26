@@ -276,11 +276,13 @@ class BusinessmanPresenter extends BasePresenter
     public function formSubmitted($form)
     {
         $values = $form->getValues();
+        $sendEmail = false;
 
         if(!$this->businessman){
             $this->businessman = new Businessman;
             $this->businessman->setActive(true);
             $this->em->persist($this->businessman);
+            $sendEmail = true;
         }
 
         $this->businessman->setName($values->name);
@@ -300,6 +302,33 @@ class BusinessmanPresenter extends BasePresenter
         }
         
         $this->businessman->setBusinessUrl($values->businessUrl);        
+
+        //send email
+        if($sendEmail){
+            $mail = new \Nette\Mail\Message;
+            $mail->addTo($values->email);
+            
+            $domain = str_replace('www.', '', $this->getHttpRequest()->url->host);
+            
+            if($domain !== 'localhost') $mail->setFrom('no-reply@' . $domain);
+            else $mail->setFrom('no-reply@test.cz'); // TODO move to settings
+
+            $mailBody = '<h1><u>Vaše obchodní údaje</u></h1>';
+            $mailBody .= '<p>'.$values->name.' '.$values->lastname.'<br>';
+            $mailBody .= '<a href="mailto:'.$values->email.'">'.$values->email.'</a><br>';
+            $mailBody .= $values->phone.'<br>';
+            $mailBody .= '<a href="https://www.zajistenainvestice.cz/obchodnici?bcode='.$this->businessman->getBusinessId().'">www.zajistenainvestice.cz</a></p>';
+
+            $mail->setSubject('Byl Vám založen účet na www.zajistenainvestice.cz');
+            $mail->setHtmlBody($mailBody);
+
+            try {
+                $mail->send();  
+                $this->flashMessage('Email has been sent', 'success');
+            } catch (\Exception $e) {
+                $this->flashMessage('Cannot send email.', 'danger');                    
+            }
+        }
 
         $this->em->flush();
 
