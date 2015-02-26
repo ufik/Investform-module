@@ -63,6 +63,9 @@ class InvestformPresenter extends BasePresenter
         $grid->addColumnText('contract', 'Contract')->setCustomRender(function($item) {
             return $item->getContractSend() ? 'Odesláno' : 'Neodesláno';
         });
+        $grid->addColumnText('contractPaid', 'Contract paid')->setCustomRender(function($item) {
+            return $item->getContractPaid() ? 'Yes' : 'No';
+        });
         $grid->addColumnText('clientContacted', 'Client contacted')->setCustomRender(function($item) {
             return $item->getClientContacted() ? 'Yes' : 'No';
         });
