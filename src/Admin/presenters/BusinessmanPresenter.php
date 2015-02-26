@@ -11,6 +11,7 @@ use Nette\Forms\Form;
 use WebCMS\InvestformModule\Entity\Businessman;
 use WebCMS\InvestformModule\Entity\Company;
 use WebCMS\InvestformModule\Entity\Investment;
+use WebCMS\Entity\User;
 
 /**
  * Description of
@@ -211,6 +212,18 @@ class BusinessmanPresenter extends BasePresenter
 
         $form->addText('name', 'Firstname')->setRequired('Firstname is mandatory.');
         $form->addText('lastname', 'Lastname')->setRequired('Lastname is mandatory.');
+
+        $users = $this->em->getRepository('\WebCMS\Entity\User')->findAll();
+        $usersForSelect = array();
+        if ($users) {
+            $usersForSelect[] = "";
+            foreach ($users as $user) {
+                $usersForSelect[$user->getId()] = $user->getUsername();
+            }
+        }
+
+        $form->addSelect('user', 'User')->setItems($usersForSelect);
+
         $form->addText('street', 'Street and number')->setRequired('Street and number is mandatory.');
         $form->addText('zipCity', 'Zip and city')->setRequired('Zip and city is mandatory.');
         $form->addText('email', 'Email')

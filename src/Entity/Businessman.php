@@ -75,6 +75,11 @@ class Businessman extends \WebCMS\Entity\Entity
      */
     private $company;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="\WebCMS\Entity\User") 
+     */
+    private $user;
+
 
     public function getName()
     {
@@ -194,6 +199,17 @@ class Businessman extends \WebCMS\Entity\Entity
     public function setCompany($company)
     {
         $this->company = $company;
+        return $this;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    public function setUser($user)
+    {
+        $this->user = $user;
         return $this;
     }
 
