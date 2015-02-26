@@ -18,14 +18,19 @@ class Businessman extends \WebCMS\Entity\Entity
 {
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $lastname;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $businessname;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -210,6 +215,17 @@ class Businessman extends \WebCMS\Entity\Entity
     public function setUser($user)
     {
         $this->user = $user;
+        return $this;
+    }
+
+    public function getBusinessname()
+    {
+        return $this->businessname;
+    }
+    
+    public function setBusinessname($businessname)
+    {
+        $this->businessname = $businessname;
         return $this;
     }
 
