@@ -37,6 +37,8 @@ class BusinessmanPresenter extends BasePresenter
 
     private $closedInvestmentsAmount;
 
+    private $user;
+
     protected function startup()
     {
     	parent::startup();
@@ -49,12 +51,52 @@ class BusinessmanPresenter extends BasePresenter
 
     public function actionDefault($idPage)
     {
-
+        $this->user = $this->getUser();
     }
 
     public function renderDefault($idPage)
     {
     	$this->reloadContent();
+
+        $roles = $this->user->getIdentity()->getRoles();
+        if (count(array_intersect(array('superadmin', 'admin'), $roles)) > 0) {
+            $this->template->show = true;
+        } else {
+            $this->businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findOneBy(array(
+                'user' => $this->user->getIdentity()->getId()
+            ));
+
+            $this->investments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' => $this->businessman
+            ));
+
+            $this->openInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' => $this->businessman,
+                'contractSend' => false
+            ));
+            $this->openInvestmentsAmount = 0;
+            foreach ($this->openInvestments as $investment) {
+                $this->openInvestmentsAmount += $investment->getInvestment();
+            }
+
+            $this->closedInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' => $this->businessman,
+                'contractSend' => true
+            ));
+            $this->closedInvestmentsAmount = 0;
+            foreach ($this->closedInvestments as $investment) {
+                $this->closedInvestmentsAmount += $investment->getInvestment();
+            }
+            $this->template->show = false;
+            $this->template->businessman = $this->businessman;
+            $this->template->urlCode = $this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode=';
+            $this->template->investments = $this->investments;
+            $this->template->openInvestments = count($this->openInvestments);
+            $this->template->closedInvestments = count($this->closedInvestments);
+            $this->template->openInvestmentsAmount = $this->openInvestmentsAmount;
+            $this->template->closedInvestmentsAmount = $this->closedInvestmentsAmount;
+        }
+
     	$this->template->idPage = $idPage;
     }
 
@@ -97,7 +139,12 @@ class BusinessmanPresenter extends BasePresenter
         $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
 
         $grid->addColumnText('name', 'Firstname')->setCustomRender(function($item) {
-            return $item->getName() . ' ' . $item->getLastname();
+            if ($item->getName()) {
+                return $item->getName() . ' ' . $item->getLastname();
+            } else {
+                return $item->getBusinessname();
+            }
+            
         });
 
         $grid->addColumnText('businessId', 'Business ID');
@@ -123,7 +170,11 @@ class BusinessmanPresenter extends BasePresenter
         $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
 
         $grid->addColumnText('name', 'Firstname')->setCustomRender(function($item) {
-            return $item->getName() . ' ' . $item->getLastname();
+            if ($item->getName()) {
+                return $item->getName() . ' ' . $item->getLastname();
+            } else {
+                return $item->getBusinessname();
+            }
         });
 
         $grid->addColumnText('businessId', 'Business ID');
@@ -210,8 +261,11 @@ class BusinessmanPresenter extends BasePresenter
     {
         $form = $this->createForm('form-submit', 'default', null);
 
-        $form->addText('name', 'Firstname')->setRequired('Firstname is mandatory.');
-        $form->addText('lastname', 'Lastname')->setRequired('Lastname is mandatory.');
+        $form->addText('name', 'Firstname');
+        $form->addText('lastname', 'Lastname');
+        $form->addText('businessname', 'Business name')
+            ->addConditionOn($form['name'], ~Form::FILLED)
+            ->addRule(Form::FILLED, 'Fill in name or business name.');
 
         $users = $this->em->getRepository('\WebCMS\Entity\User')->findAll();
         $usersForSelect = array();
@@ -300,10 +354,17 @@ class BusinessmanPresenter extends BasePresenter
 
         $this->businessman->setName($values->name);
         $this->businessman->setLastname($values->lastname);
+        $this->businessman->setBusinessname($values->businessname);
         $this->businessman->setStreet($values->street);
         $this->businessman->setZipCity($values->zipCity);
         $this->businessman->setEmail($values->email);
         $this->businessman->setPhone($values->phone);
+
+        if ($values->user) {
+            $user = $this->em->getRepository('\WebCMS\Entity\User')->find($values->user);
+            $this->businessman->setUser($user);
+        }
+        
 
         $company = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Company')->find($values->company);
         $this->businessman->setCompany($company);

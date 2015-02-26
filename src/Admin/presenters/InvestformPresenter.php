@@ -71,6 +71,7 @@ class InvestformPresenter extends BasePresenter
         $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
         $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
         $grid->addActionHref("contacted", 'Contacted', 'contacted', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
+        $grid->addActionHref("paid", 'Contract Paid', 'paid', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
 
         // $operations = array('downloadGrid' => 'Download', 'deleteGrid' => 'Delete');
         // $grid->setOperation($operations, $this->handleGridOperations)
@@ -226,9 +227,18 @@ class InvestformPresenter extends BasePresenter
         $this->em->flush();
 
         $this->flashMessage('Contract has been updated.', 'success');
-        $this->forward('default', array(
-            'idPage' => $this->actualPage->getId()
-        ));
+
+        $roles = $this->user->getIdentity()->getRoles();
+        if (count(array_intersect(array('superadmin', 'admin'), $roles)) > 0) {
+            $this->forward('default', array(
+                'idPage' => $this->actualPage->getId()
+            ));
+        } else {
+            $this->forward('Businessman:default', array(
+                'idPage' => $this->actualPage->getId()
+            ));
+        }
+        
     }
 
     public function actionUpdate($id, $idPage)
@@ -268,6 +278,19 @@ class InvestformPresenter extends BasePresenter
     {
         $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
         $investment->setClientContacted($investment->getClientContacted() ? false : true);
+
+        $this->em->flush();
+
+        $this->flashMessage('Parameter has been changed.', 'success');
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionPaid($id, $idPage)
+    {
+        $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
+        $investment->setContractPaid($investment->getContractPaid() ? false : true);
 
         $this->em->flush();
 

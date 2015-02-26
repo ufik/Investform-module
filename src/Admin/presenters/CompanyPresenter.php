@@ -275,7 +275,11 @@ class CompanyPresenter extends BasePresenter
         $grid->setFilterRenderType(\Grido\Components\Filters\Filter::RENDER_INNER);
 
         $grid->addColumnText('name', 'Name')->setCustomRender(function($item) {
-            return $item->getName() . ' ' . $item->getLastname();
+            if ($item->getName()) {
+                return $item->getName() . ' ' . $item->getLastname();
+            } else {
+                return $item->getBusinessname();
+            }
         });
 
         $grid->addColumnText('businessId', 'Business ID');
@@ -375,7 +379,11 @@ class CompanyPresenter extends BasePresenter
         });
 
         $grid->addColumnText('businessman_name', 'Businessman name')->setCustomRender(function($item) {
-            return $item->getBusinessman()->getName().' '.$item->getBusinessman()->getLastname();
+            if ($item->getBusinessman()->getName()) {
+                return $item->getBusinessman()->getName() . ' ' . $item->getBusinessman()->getLastname();
+            } else {
+                return $item->getBusinessman()->getBusinessname();
+            }
         });
 
         $grid->addColumnText('businessId', 'Business Id')->setCustomRender(function($item) {

@@ -97,6 +97,11 @@ class Investment extends \WebCMS\Entity\Entity
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
+    private $contractPaid;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
     private $clientContacted;
 
     /**
@@ -450,6 +455,17 @@ class Investment extends \WebCMS\Entity\Entity
     {
         $this->contractSend = $contractSend;
 
+        return $this;
+    }
+
+    public function getContractPaid()
+    {
+        return $this->contractPaid;
+    }
+    
+    public function setContractPaid($contractPaid)
+    {
+        $this->contractPaid = $contractPaid;
         return $this;
     }
 

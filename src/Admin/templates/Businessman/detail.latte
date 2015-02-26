@@ -6,7 +6,14 @@
 		{else}
 			<a n:href="inactiveBusinessmen idPage => $idPage" class="back">{_'Back to inactive businessmen'}</a>
 		{/if}
-		<h1 class="float-l">{$businessman->getName()} {$businessman->getLastname()}</h1>
+		<h1 class="float-l">
+		{if $businessman->getName()}
+			{$businessman->getName()} {$businessman->getLastname()}
+		{else}
+			{$businessman->getBusinessname()}
+		{/if}
+		
+		</h1>
 
 		
 		<div class="changeActiveStatus float-r">
