@@ -313,11 +313,11 @@ class BusinessmanPresenter extends BasePresenter
             if($domain !== 'localhost') $mail->setFrom('no-reply@' . $domain);
             else $mail->setFrom('no-reply@test.cz'); // TODO move to settings
 
-            $mailBody = '<h1><u>Vaše obchodní údaje</u></h1>';
+            $mailBody = '<h2><u>Vaše obchodní údaje</u></h2>';
             $mailBody .= '<p>'.$values->name.' '.$values->lastname.'<br>';
             $mailBody .= '<a href="mailto:'.$values->email.'">'.$values->email.'</a><br>';
             $mailBody .= $values->phone.'<br>';
-            $mailBody .= '<a href="https://www.zajistenainvestice.cz/obchodnici?bcode='.$this->businessman->getBusinessId().'">www.zajistenainvestice.cz</a></p>';
+            $mailBody .= '<a href="https://www.zajistenainvestice.cz/obchodnici?bcode='.$values->businessUrl.'">www.zajistenainvestice.cz</a></p>';
 
             $mail->setSubject('Byl Vám založen účet na www.zajistenainvestice.cz');
             $mail->setHtmlBody($mailBody);
