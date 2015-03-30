@@ -399,7 +399,7 @@ class BusinessmanPresenter extends BasePresenter
 
                 $mailBody .= '<h3><u>Vaše přístupové údaje</u></h3>';
                 $mailBody .= '<table><tbody>';
-                $mailBody .= '<tr><td><strong>Přístup: </strong></td><td><a href="https://www.zajistenainvestice.cz/admin"></td></tr>';
+                $mailBody .= '<tr><td><strong>Přístup: </strong></td><td><a href="https://www.zajistenainvestice.cz/admin">www.zajistenainvestice.cz/admin</a></td></tr>';
                 $mailBody .= '<tr><td><strong>Login: </strong></td><td>'.$user->getUsername().'</td></tr>';
                 $mailBody .= '<tr><td><strong>Heslo: </strong></td><td>'.$this->settings->get('Businessman password', 'InvestformModule', 'text')->getValue().'</td></tr>';
                 $mailBody .= '</tbody></table>';
