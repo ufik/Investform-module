@@ -37,6 +37,7 @@ class SettingsPresenter extends BasePresenter
         $settings[] = $this->settings->get('Contract Email body', 'InvestformModule', 'textarea');
         $settings[] = $this->settings->get('Notification subject', 'InvestformModule', 'text');
         $settings[] = $this->settings->get('Notification body', 'InvestformModule', 'textarea');
+        $settings[] = $this->settings->get('Businessman password', 'InvestformModule', 'text');
 
 		return $this->createSettingsForm($settings);
     }

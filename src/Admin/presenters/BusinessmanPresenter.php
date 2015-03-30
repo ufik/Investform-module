@@ -388,10 +388,23 @@ class BusinessmanPresenter extends BasePresenter
             else $mail->setFrom('no-reply@test.cz'); // TODO move to settings
 
             $mailBody = '<h2><u>Vaše obchodní údaje</u></h2>';
-            $mailBody .= '<p>'.$values->name.' '.$values->lastname.'<br>';
-            $mailBody .= '<a href="mailto:'.$values->email.'">'.$values->email.'</a><br>';
-            $mailBody .= $values->phone.'<br>';
-            $mailBody .= '<a href="https://www.zajistenainvestice.cz/obchodnici?bcode='.$values->businessUrl.'">www.zajistenainvestice.cz</a></p>';
+            $mailBody .= '<table><tbody>';
+            $mailBody .= '<tr><td><strong>Jméno: </strong></td><td>'.$values->name.' '.$values->lastname.'</td></tr>';
+            $mailBody .= '<tr><td><strong>Email: </strong></td><td><a href="mailto:'.$values->email.'">'.$values->email.'</a></td></tr>';
+            $mailBody .= '<tr><td><strong>Tel. číslo: </strong></td><td>'.$values->phone.'</td></tr>';
+            $mailBody .= '<tr><td><strong>Obchodní URL: </strong></td><td><a href="https://www.zajistenainvestice.cz/obchodnici?bcode='.$values->businessUrl.'">www.zajistenainvestice.cz</td></tr>';
+            $mailBody .= '</tbody></table>';
+
+            if (isset($user)) {
+
+                $mailBody .= '<h3><u>Vaše přístupové údaje</u></h3>';
+                $mailBody .= '<table><tbody>';
+                $mailBody .= '<tr><td><strong>Přístup: </strong></td><td><a href="https://www.zajistenainvestice.cz/admin"></td></tr>';
+                $mailBody .= '<tr><td><strong>Login: </strong></td><td>'.$user->getUsername().'</td></tr>';
+                $mailBody .= '<tr><td><strong>Heslo: </strong></td><td>'.$this->settings->get('Businessman password', 'InvestformModule', 'text')->getValue().'</td></tr>';
+                $mailBody .= '</tbody></table>';
+
+            }
 
             $mail->setSubject('Byl Vám založen účet na www.zajistenainvestice.cz');
             $mail->setHtmlBody($mailBody);

@@ -59,6 +59,9 @@ class PdfPrinter
 		$company = $this->investment->getCompany();
 		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
 		$id = (!empty($bNumber) ? str_replace('/', '', $bNumber) : $this->investment->getRegistrationNumber());
+
+		$businnesId = ($this->investment->getBusinessman() ? $this->investment->getBusinessman()->getBusinessId() : $this->investment->getPin());
+
 		$fieldData = array(
 		    'name' => $name,
 		    'identificationNumber' => $id,
@@ -71,7 +74,7 @@ class PdfPrinter
 		    'telephoneNumber' => $this->investment->getPhone(),
 		    'paymentVariableSymbol' => $id,
 			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
-			'pin' => $this->investment->getPin()
+			'pin' => $businnesId
 		);
 
 		return $this->processPdf($response, $templatePath, $fieldData, $this->investment, $this->investment->getContractHash());
@@ -89,6 +92,7 @@ class PdfPrinter
 		$company = $this->investment->getCompany();
 		$name = $this->investment->getAddress()->getName() . ' ' . $this->investment->getAddress()->getLastname() . (!empty($company) ? ' / ' . $company : '');
 		$id = (!empty($bNumber) ? str_replace('/', '', $bNumber) : $this->investment->getRegistrationNumber());
+		$businnesId = ($this->investment->getBusinessman() ? $this->investment->getBusinessman()->getBusinessId() : $this->investment->getPin());
 		$fieldData = array(
 		    'name' => $name,
 		    'identificationNumber' => $id,
@@ -101,7 +105,7 @@ class PdfPrinter
 		    'telephoneNumber' => $this->investment->getPhone(),
 		    'paymentVariableSymbol' => $id,
 			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
-			'pin' => $this->investment->getPin()
+			'pin' => $businnesId
 		);
 
 		$pdf = new \FPDM($templatePath);
