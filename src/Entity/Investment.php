@@ -105,7 +105,7 @@ class Investment extends \WebCMS\Entity\Entity
     private $clientContacted;
 
     /**
-     * @ORM\OneToOne(targetEntity="Businessman") 
+     * @ORM\ManyToOne(targetEntity="Businessman") 
      */
     private $businessman;
 
