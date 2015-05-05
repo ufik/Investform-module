@@ -436,7 +436,9 @@ class BusinessmanPresenter extends BasePresenter
 
         $this->openInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
             'businessman' => $this->businessman,
-            'contractSend' => false
+            'contractSend' => true,
+            'contractClosed' => false,
+            'contractPaid' => false
         ));
         $this->openInvestmentsAmount = 0;
         foreach ($this->openInvestments as $investment) {
@@ -445,7 +447,9 @@ class BusinessmanPresenter extends BasePresenter
 
         $this->closedInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
             'businessman' => $this->businessman,
-            'contractSend' => true
+            'contractSend' => true,
+            'contractClosed' => true,
+            'contractPaid' => false
         ));
         $this->closedInvestmentsAmount = 0;
         foreach ($this->closedInvestments as $investment) {
@@ -490,6 +494,9 @@ class BusinessmanPresenter extends BasePresenter
             } else {
                 return 'No';
             }
+        });
+        $grid->addColumnText('contractClosed', 'Contract closed')->setCustomRender(function($item) {
+            return $item->getContractClosed() ? 'Yes' : 'No';
         });
         $grid->addColumnText('contractPaid', 'Contract paid')->setCustomRender(function($item) {
             if ($item->getContractPaid()) {

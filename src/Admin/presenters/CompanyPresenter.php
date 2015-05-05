@@ -398,6 +398,9 @@ class CompanyPresenter extends BasePresenter
                 return 'No';
             }
         });
+        $grid->addColumnText('contractClosed', 'Contract closed')->setCustomRender(function($item) {
+            return $item->getContractClosed() ? 'Yes' : 'No';
+        });
         $grid->addColumnText('contractPaid', 'Contract paid')->setCustomRender(function($item) {
             if ($item->getContractPaid()) {
                 return 'Yes';

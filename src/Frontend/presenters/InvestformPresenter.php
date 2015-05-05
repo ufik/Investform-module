@@ -271,15 +271,15 @@ class InvestformPresenter extends BasePresenter
 		$this->sendPdf($investment, 'form');
 
 		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
-		if (!empty($infoEmail)) {
-			$mail = new Message;
-			$mail->setFrom($infoEmail)
-			    ->addTo($infoEmail)
-			    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
-			    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
+		// if (!empty($infoEmail)) {
+		// 	$mail = new Message;
+		// 	$mail->setFrom($infoEmail)
+		// 	    ->addTo($infoEmail)
+		// 	    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
+		// 	    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
 
-			$mail->send();
-		}
+		// 	$mail->send();
+		// }
 
 		$this->redirect('default', array(
 			'path' => $this->actualPage->getPath(),

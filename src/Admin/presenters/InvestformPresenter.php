@@ -63,6 +63,9 @@ class InvestformPresenter extends BasePresenter
         $grid->addColumnText('contract', 'Contract')->setCustomRender(function($item) {
             return $item->getContractSend() ? 'Odesláno' : 'Neodesláno';
         });
+        $grid->addColumnText('contractClosed', 'Contract closed')->setCustomRender(function($item) {
+            return $item->getContractClosed() ? 'Yes' : 'No';
+        });
         $grid->addColumnText('contractPaid', 'Contract paid')->setCustomRender(function($item) {
             return $item->getContractPaid() ? 'Yes' : 'No';
         });
@@ -70,11 +73,12 @@ class InvestformPresenter extends BasePresenter
             return $item->getClientContacted() ? 'Yes' : 'No';
         });
 
-        $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary')));
-        $grid->addActionHref("contacted", 'Contacted', 'contacted', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
-        $grid->addActionHref("paid", 'Contract Paid', 'paid', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax')));
+        $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'purple')));
+        $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'purple')));
+        $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
+        $grid->addActionHref("closed", 'Contract closed', 'closed', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
+        $grid->addActionHref("paid", 'Contract Paid', 'paid', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
+        $grid->addActionHref("contacted", 'Contacted', 'contacted', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
 
         // $operations = array('downloadGrid' => 'Download', 'deleteGrid' => 'Delete');
         // $grid->setOperation($operations, $this->handleGridOperations)
@@ -318,11 +322,34 @@ class InvestformPresenter extends BasePresenter
     public function actionPaid($id, $idPage)
     {
         $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
-        $investment->setContractPaid($investment->getContractPaid() ? false : true);
 
-        $this->em->flush();
+        if ($investment->getContractClosed()) {
+            $investment->setContractPaid($investment->getContractPaid() ? false : true);
 
-        $this->flashMessage('Parameter has been changed.', 'success');
+            $this->em->flush();
+
+            $this->flashMessage('Parameter has been changed.', 'success');
+        } else {
+            $this->flashMessage('Contract must be closed first.', 'error');
+        }
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
+    }
+
+    public function actionClosed($id, $idPage)
+    {
+        $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
+
+        if ($investment->getContractSend()) {
+            $investment->setContractClosed($investment->getContractClosed() ? false : true);
+
+            $this->em->flush();
+
+            $this->flashMessage('Parameter has been changed.', 'success');
+        } else {
+            $this->flashMessage('Contract must be sent first.', 'error');
+        }
         $this->forward('default', array(
             'idPage' => $this->actualPage->getId()
         ));
