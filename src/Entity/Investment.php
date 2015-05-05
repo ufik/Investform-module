@@ -97,6 +97,11 @@ class Investment extends \WebCMS\Entity\Entity
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
+    private $contractClosed;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
     private $contractPaid;
 
     /**
@@ -455,6 +460,17 @@ class Investment extends \WebCMS\Entity\Entity
     {
         $this->contractSend = $contractSend;
 
+        return $this;
+    }
+
+    public function getContractClosed()
+    {
+        return $this->contractClosed;
+    }
+    
+    public function setContractClosed($contractClosed)
+    {
+        $this->contractClosed = $contractClosed;
         return $this;
     }
 

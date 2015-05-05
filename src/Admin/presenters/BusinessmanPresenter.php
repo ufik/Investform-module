@@ -527,7 +527,8 @@ class BusinessmanPresenter extends BasePresenter
     {
         $this->forward('Investform:send', array(
             'id' => $id,
-            'idPage' => $this->actualPage->getId()
+            'idPage' => $this->actualPage->getId(),
+            'from' => 'businessman'
         ));
     }
 

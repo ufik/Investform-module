@@ -253,20 +253,45 @@ class InvestformPresenter extends BasePresenter
         $this->template->idPage = $idPage;
     }
 
-    public function actionSend($id, $idPage)
+    public function actionSend($id, $idPage, $from = NULL)
     {
         $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
 
-        $emailSender = new EmailSender($this->settings, $investment, 'contract');
-        $emailSender->send();
+        if ($investment->getBirthdateNumber()) {
+            
+            $emailSender = new EmailSender($this->settings, $investment, 'contract');
+            $emailSender->send();
 
-        $investment->setContractSend(true);
-        $this->em->flush();
+            $investment->setContractSend(true);
+            $this->em->flush();
 
-        $this->flashMessage('Contract has been sent to the client\'s email address.', 'success');
-        $this->forward('default', array(
-            'idPage' => $this->actualPage->getId()
-        ));
+            $this->flashMessage('Contract has been sent to the client\'s email address.', 'success');
+
+        } else {
+
+            $this->flashMessage("Please fill client's birthdate number.", 'error');
+
+        }
+
+        if ($from == 'businessman') {
+            
+            $this->forward('Businessman:detail', array(
+                'id' => $investment->getBusinessman()->getId(),
+                'idPage' => $idPage
+            ));
+
+        } elseif ($from == 'company') {
+            
+            //TODO
+
+        } else {
+
+            $this->forward('default', array(
+                'idPage' => $this->actualPage->getId()
+            ));
+
+        }
+        
     }
 
     public function actionDownload($id)
