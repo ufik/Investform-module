@@ -40,7 +40,7 @@ class PdfPrinter
 		    'bankAccountNumber' => $this->investment->getBankAccount(),
 		    'email' => $this->investment->getEmail(),
 		    'telephoneNumber' => $this->investment->getPhone(),
-		    'investmentLength' => $length . ' ' . ($length == '3' ? 'roky' : 'let'), // TODO move to settings
+		    'investmentLength' => ($length == '3' ? 'tříletý' : 'pětiletý'), // TODO move to settings
 		    'incomeAfterTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", ".") . ',- Kč',
 		    'incomeBeforeTaxes' => number_format($fvoa->getTotalProfit(), 0, ",", ".") . ',- Kč'
 		);
