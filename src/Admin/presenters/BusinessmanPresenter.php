@@ -29,6 +29,10 @@ class BusinessmanPresenter extends BasePresenter
 
     private $investments;
 
+    private $newInvestments;
+
+    private $newInvestmentsAmount;
+
     private $openInvestments;
 
     private $openInvestmentsAmount;
@@ -36,6 +40,10 @@ class BusinessmanPresenter extends BasePresenter
     private $closedInvestments;
 
     private $closedInvestmentsAmount;
+
+    private $paidInvestments;
+
+    private $paidInvestmentsAmount;
 
     private $user;
 
@@ -434,6 +442,17 @@ class BusinessmanPresenter extends BasePresenter
             'businessman' => $this->businessman
         ));
 
+        $this->newInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            'businessman' => $this->businessman,
+            'contractSend' => false,
+            'contractClosed' => false,
+            'contractPaid' => false
+        ));
+        $this->newInvestmentsAmount = 0;
+        foreach ($this->newInvestments as $investment) {
+            $this->newInvestmentsAmount += $investment->getInvestment();
+        }
+
         $this->openInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
             'businessman' => $this->businessman,
             'contractSend' => true,
@@ -455,6 +474,17 @@ class BusinessmanPresenter extends BasePresenter
         foreach ($this->closedInvestments as $investment) {
             $this->closedInvestmentsAmount += $investment->getInvestment();
         }
+
+        $this->paidInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            'businessman' => $this->businessman,
+            'contractSend' => true,
+            'contractClosed' => true,
+            'contractPaid' => true
+        ));
+        $this->paidInvestmentsAmount = 0;
+        foreach ($this->paidInvestments as $investment) {
+            $this->paidInvestmentsAmount += $investment->getInvestment();
+        }
     }
 
     public function renderDetail($idPage)
@@ -464,10 +494,14 @@ class BusinessmanPresenter extends BasePresenter
         $this->template->urlCode = $this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode=';
         $this->template->businessman = $this->businessman;
         $this->template->investments = $this->investments;
+        $this->template->newInvestments = count($this->newInvestments);
         $this->template->openInvestments = count($this->openInvestments);
         $this->template->closedInvestments = count($this->closedInvestments);
+        $this->template->paidInvestments = count($this->paidInvestments);
+        $this->template->newInvestmentsAmount = $this->newInvestmentsAmount;
         $this->template->openInvestmentsAmount = $this->openInvestmentsAmount;
         $this->template->closedInvestmentsAmount = $this->closedInvestmentsAmount;
+        $this->template->paidInvestmentsAmount = $this->paidInvestmentsAmount;
     }
 
     protected function createComponentInvestmentsGrid($name)
