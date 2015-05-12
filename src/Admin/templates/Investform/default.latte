@@ -7,4 +7,26 @@
 	
 	{control grid}
 
+	<script>
+		$(function() {
+			$actionsWrapper = $('table td.actions');
+			$gridActions = $('table td.actions a');
+			
+			$actionsWrapper.prepend('<option>Vyberte akci</option>');
+			$actionsWrapper.wrapInner('<select class="changeAction"></select>');
+			$gridActions.wrap('<option></option>');
+
+			$('.changeAction').change(function(event) {
+				$('.changeAction option:selected').find('a').trigger('click');
+			});
+		});
+	</script>
+
+	<style>
+		.changeAction {
+			border: 2px solid #392B47;
+			height: 35px !important;
+		}
+	</style>
+
 {/block}
