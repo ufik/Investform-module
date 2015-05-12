@@ -17,7 +17,12 @@
 			$gridActions.wrap('<option></option>');
 
 			$('.changeAction').change(function(event) {
-				$('.changeAction option:selected').find('a').trigger('click');
+				var href = $('.changeAction option:selected').find('a').attr('href'); 
+				if (href.indexOf("download") >= 0) {
+					window.location.href = href;
+				} else {
+					$('.changeAction option:selected').find('a').trigger('click');
+				}
 			});
 		});
 	</script>
