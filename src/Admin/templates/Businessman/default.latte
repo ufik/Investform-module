@@ -52,15 +52,29 @@
 			<div class="col-md-6">
 				
 				<div class="float-l">
+					<p class="headTitle">{_'New investments'}</p>
+					<p class="numberOfInvestments">{$newInvestments}</p>
+					<p class="investmentsAmount">{_'Total'} {$newInvestmentsAmount} Kč</p>
+				</div>
+
+				<div class="float-r">
 					<p class="headTitle">{_'Open investments'}</p>
 					<p class="numberOfInvestments">{$openInvestments}</p>
 					<p class="investmentsAmount">{_'Total'} {$openInvestmentsAmount} Kč</p>
 				</div>
 
-				<div class="float-r">
+				<div class="clear"></div>
+
+				<div class="float-l">
 					<p class="headTitle">{_'Closed investments'}</p>
 					<p class="numberOfInvestments">{$closedInvestments}</p>
 					<p class="investmentsAmount">{_'Total'} {$closedInvestmentsAmount} Kč</p>
+				</div>
+
+				<div class="float-r">
+					<p class="headTitle">{_'Paid investments'}</p>
+					<p class="numberOfInvestments">{$paidInvestments}</p>
+					<p class="investmentsAmount">{_'Total'} {$paidInvestmentsAmount} Kč</p>
 				</div>
 
 			</div>

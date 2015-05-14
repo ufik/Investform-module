@@ -78,9 +78,39 @@ class BusinessmanPresenter extends BasePresenter
                 'businessman' => $this->businessman
             ));
 
+            // $this->openInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            //     'businessman' => $this->businessman,
+            //     'contractSend' => false
+            // ));
+            // $this->openInvestmentsAmount = 0;
+            // foreach ($this->openInvestments as $investment) {
+            //     $this->openInvestmentsAmount += $investment->getInvestment();
+            // }
+
+            // $this->closedInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+            //     'businessman' => $this->businessman,
+            //     'contractSend' => true
+            // ));
+            // $this->closedInvestmentsAmount = 0;
+            // foreach ($this->closedInvestments as $investment) {
+            //     $this->closedInvestmentsAmount += $investment->getInvestment();
+            // }
+            $this->newInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' => $this->businessman,
+                'contractSend' => false,
+                'contractClosed' => false,
+                'contractPaid' => false
+            ));
+            $this->newInvestmentsAmount = 0;
+            foreach ($this->newInvestments as $investment) {
+                $this->newInvestmentsAmount += $investment->getInvestment();
+            }
+
             $this->openInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
                 'businessman' => $this->businessman,
-                'contractSend' => false
+                'contractSend' => true,
+                'contractClosed' => false,
+                'contractPaid' => false
             ));
             $this->openInvestmentsAmount = 0;
             foreach ($this->openInvestments as $investment) {
@@ -89,20 +119,37 @@ class BusinessmanPresenter extends BasePresenter
 
             $this->closedInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
                 'businessman' => $this->businessman,
-                'contractSend' => true
+                'contractSend' => true,
+                'contractClosed' => true,
+                'contractPaid' => false
             ));
             $this->closedInvestmentsAmount = 0;
             foreach ($this->closedInvestments as $investment) {
                 $this->closedInvestmentsAmount += $investment->getInvestment();
             }
+
+            $this->paidInvestments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' => $this->businessman,
+                'contractSend' => true,
+                'contractClosed' => true,
+                'contractPaid' => true
+            ));
+            $this->paidInvestmentsAmount = 0;
+            foreach ($this->paidInvestments as $investment) {
+                $this->paidInvestmentsAmount += $investment->getInvestment();
+            }
             $this->template->show = false;
             $this->template->businessman = $this->businessman;
             $this->template->urlCode = $this->presenter->getHttpRequest()->url->baseUrl.$this->actualPage->getSlug().'/?bcode=';
             $this->template->investments = $this->investments;
+            $this->template->newInvestments = count($this->newInvestments);
             $this->template->openInvestments = count($this->openInvestments);
             $this->template->closedInvestments = count($this->closedInvestments);
+            $this->template->paidInvestments = count($this->paidInvestments);
+            $this->template->newInvestmentsAmount = $this->newInvestmentsAmount;
             $this->template->openInvestmentsAmount = $this->openInvestmentsAmount;
             $this->template->closedInvestmentsAmount = $this->closedInvestmentsAmount;
+            $this->template->paidInvestmentsAmount = $this->paidInvestmentsAmount;
         }
 
     	$this->template->idPage = $idPage;
