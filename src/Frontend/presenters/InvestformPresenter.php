@@ -250,6 +250,11 @@ class InvestformPresenter extends BasePresenter
 		$investment->setCompany($values->company);
 		$investment->setAddress($address);
 
+		$investment->setContractSend(false);
+		$investment->setContractPaid(false);
+		$investment->setContractClosed(false);
+		$investment->setClientContacted(false);
+
 		if (!empty($values->bankAccountPrefix)) {
 			$bankAccount = str_replace('_', '', $values->bankAccountPrefix).'-'.str_replace('_', '', $values->bankAccount);
 		} else {
