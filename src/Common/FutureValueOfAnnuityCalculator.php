@@ -26,7 +26,7 @@ class FutureValueOfAnnuityCalculator
 		$this->length = $length;
 
 		$this->rates = array(
-			3 => new Rate(3, 0.07, 1.03),
+			3 => new Rate(3, 0.07, 1.02),
 			5 => new Rate(5, 0.09, 1.03)
 		);
 
