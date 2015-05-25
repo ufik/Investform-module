@@ -273,7 +273,7 @@ class InvestformPresenter extends BasePresenter
 		$investment->getHash();
 		$this->em->flush();
 
-		// $this->sendPdf($investment, 'form');
+		$this->sendPdf($investment, 'form');
 
 		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
 		// if (!empty($infoEmail)) {
@@ -332,7 +332,7 @@ class InvestformPresenter extends BasePresenter
 			$investment->setPostalAddress($address);
 		}
 
-		// $this->sendPdf($investment, 'contract');
+		$this->sendPdf($investment, 'contract');
 		$this->em->flush();
 
 		$this->redirect('default', array(
