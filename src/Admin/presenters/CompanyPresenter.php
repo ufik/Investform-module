@@ -26,6 +26,22 @@ class CompanyPresenter extends BasePresenter
 
     private $businessmen;
 
+    private $newInvestments = 0;
+
+    private $newInvestmentsAmount = 0;
+
+    private $openInvestments = 0;
+
+    private $openInvestmentsAmount = 0;
+
+    private $closedInvestments = 0;
+
+    private $closedInvestmentsAmount = 0;
+
+    private $paidInvestments = 0;
+
+    private $paidInvestmentsAmount = 0;
+
     protected function startup()
     {
     	parent::startup();
@@ -255,6 +271,40 @@ class CompanyPresenter extends BasePresenter
         $this->businessmen = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findBy(array(
             'company' => $this->company
         ));
+
+        foreach ($this->businessmen as $businessman) {
+            $investments = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findBy(array(
+                'businessman' => $businessman
+            ));
+
+            if ($investments) {
+
+                foreach ($investments as $investment) {
+                    // new investment
+                    if (!$investment->getContractSend() && !$investment->getContractClosed() && !$investment->getContractPaid()) {
+                        $this->newInvestments++;
+                        $this->newInvestmentsAmount += $investment->getInvestment();
+                    }
+                    // open investment
+                    if ($investment->getContractSend() && !$investment->getContractClosed() && !$investment->getContractPaid()) {
+                        $this->openInvestments++;
+                        $this->openInvestmentsAmount += $investment->getInvestment();
+                    }
+                    // closed investment
+                    if ($investment->getContractSend() && $investment->getContractClosed() && !$investment->getContractPaid()) {
+                        $this->closedInvestments++;
+                        $this->closedInvestmentsAmount += $investment->getInvestment();
+                    }
+                    // paid investment
+                    if ($investment->getContractSend() && $investment->getContractClosed() && $investment->getContractPaid()) {
+                        $this->paidInvestments++;
+                        $this->paidInvestmentsAmount += $investment->getInvestment();
+                    }
+                }
+
+            }
+
+        }
     }
 
     public function renderDetail($idPage)
@@ -263,6 +313,15 @@ class CompanyPresenter extends BasePresenter
         $this->template->idPage = $idPage;
         $this->template->businessmen = $this->businessmen;
         $this->template->company = $this->company;
+
+        $this->template->newInvestments = $this->newInvestments;
+        $this->template->openInvestments = $this->openInvestments;
+        $this->template->closedInvestments = $this->closedInvestments;
+        $this->template->paidInvestments = $this->paidInvestments;
+        $this->template->newInvestmentsAmount = $this->newInvestmentsAmount;
+        $this->template->openInvestmentsAmount = $this->openInvestmentsAmount;
+        $this->template->closedInvestmentsAmount = $this->closedInvestmentsAmount;
+        $this->template->paidInvestmentsAmount = $this->paidInvestmentsAmount;
     }
 
     protected function createComponentBusinessmenGrid($name)
