@@ -63,8 +63,8 @@ class InvestformPresenter extends BasePresenter
 		$form->addText('bankAccountPrefix', 'Bank account')
 			->addRule(callback($this, 'validateBankAccount'), "Bank acccount prefix is not valid`.");
 		$form->addText('bankAccount', 'Bank account')
-			->setRequired('Bank account is mandatory.')
-			->addRule(callback($this, 'validateBankAccount'), "Bank acccount is not valid`.");
+			->setRequired('Bank account is mandatory.');
+			// ->addRule(callback($this, 'validateBankAccount'), "Bank acccount is not valid`.");
 		$form->addSelect('investmentAmount', 'Investment amount', $this->amountItems)
 			->setRequired('Amount of investment is mandatory.');
 		$form->addSelect('investmentLength', 'Investment length', array(3 => 'Tříletý', 5 => 'Pětiletý'))
@@ -264,6 +264,8 @@ class InvestformPresenter extends BasePresenter
 			$investment->setContractPaid(false);
 			$investment->setContractClosed(false);
 			$investment->setClientContacted(false);
+
+			$values->bankAccount = ltrim($values->bankAccount, '0');
 
 			if (!empty($values->bankAccountPrefix)) {
 				$bankAccount = str_replace('_', '', $values->bankAccountPrefix).'-'.str_replace('_', '', $values->bankAccount);
