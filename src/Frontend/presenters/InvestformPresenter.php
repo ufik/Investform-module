@@ -278,8 +278,7 @@ class InvestformPresenter extends BasePresenter
 			}
 
 			$this->em->persist($investment);
-
-
+			$this->em->flush();
 			$investment->getHash();
 			$this->em->flush();
 
@@ -299,8 +298,8 @@ class InvestformPresenter extends BasePresenter
 				$mailBody .= '</p><br />';
 				$mailBody .= '<h4>Zadaná investice - údaje</h4>';
 				$mailBody .= '<p>';
-				$mailBody .= $values->investmentAmount.'<br />';
-				$mailBody .= $values->investmentLength.'<br />';
+				$mailBody .= 'Výše investice: '.$values->investmentAmount.'<br />';
+				$mailBody .= 'Varianta dluhopisu: '.$values->investmentLength.'<br />';
 				$mailBody .= '</p>';
 
 				$mail = new Message;

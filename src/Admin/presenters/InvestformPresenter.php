@@ -76,6 +76,7 @@ class InvestformPresenter extends BasePresenter
         $grid->addActionHref("send", 'Send', 'send', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'purple')));
         $grid->addActionHref("download", 'Download', 'download', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'purple')));
         $grid->addActionHref("update", 'Edit', 'update', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
+        $grid->addActionHref("delete", 'Delete', 'delete', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-danger'), 'data-confirm' => 'Are you sure you want to delete this item?'));
         $grid->addActionHref("closed", 'Contract closed', 'closed', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
         $grid->addActionHref("paid", 'Contract Paid', 'paid', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
         $grid->addActionHref("contacted", 'Contacted', 'contacted', array('idPage' => $this->actualPage->getId()))->getElementPrototype()->addAttributes(array('class' => array('btn', 'btn-primary', 'ajax', 'green')));
@@ -296,6 +297,20 @@ class InvestformPresenter extends BasePresenter
 
         }
         
+    }
+
+    public function actionDelete($id)
+    {
+        $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
+
+        $this->em->remove($investment);
+        $this->em->flush();
+
+        $this->flashMessage('Investment has been removed.', 'success');
+
+        $this->forward('default', array(
+            'idPage' => $this->actualPage->getId()
+        ));
     }
 
     public function actionDownload($id)
