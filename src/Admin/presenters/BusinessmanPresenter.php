@@ -554,6 +554,12 @@ class BusinessmanPresenter extends BasePresenter
     protected function createComponentInvestmentsGrid($name)
     {
 
+        if (!$this->businessman) {
+            $this->businessman = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Businessman')->findOneBy(array(
+                'user' => $this->user->getIdentity()->getId()
+            ));
+        }
+
         $grid = $this->createGrid($this, $name, "\WebCMS\InvestformModule\Entity\Investment", null, array(
             'businessman = '.$this->businessman->getId()
         ));

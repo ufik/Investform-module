@@ -60,8 +60,8 @@ class CalculatorPresenter extends BasePresenter
 
 		$from = strtotime($values->date);
 		if ($values->length == 5) {
-			$year = 2019;
-			$to = strtotime('2019-10-30');
+			$year = 2020;
+			$to = strtotime('2020-11-30');
 		} else {
 			$year = 2017;
 			$to = strtotime('2017-10-30');

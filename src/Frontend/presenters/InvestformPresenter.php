@@ -214,12 +214,19 @@ class InvestformPresenter extends BasePresenter
     	$this->businessmanSession = $this->getSession('businessman');
 
     	if (array_key_exists(0, $parameters) && $parameters[0] === '2') {
-    		$hash = $parameters[1];
 
-    		$investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findOneByHash($hash);
-    		$this->id = $investment->getId();
+    		if (isset($parameters[1])) {
+				$hash = $parameters[1];
 
-    		$this->template->setFile(APP_DIR . '/templates/investform-module/Investform/step2.latte');
+	    		$investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->findOneByHash($hash);
+	    		$this->id = $investment->getId();
+
+	    		$this->template->setFile(APP_DIR . '/templates/investform-module/Investform/step2.latte');
+    		} else {
+    			$this->template->setFile(APP_DIR . '/templates/investform-module/Investform/contactLater.latte');
+    		}
+
+    		
     	} else if(array_key_exists(0, $parameters) && $parameters[0] === 'final') {
     		$this->template->setFile(APP_DIR . '/templates/investform-module/Investform/final.latte');
     	}
@@ -229,71 +236,109 @@ class InvestformPresenter extends BasePresenter
 	
 	public function formSubmitted($form)
 	{
+
 		$values = $form->getValues();
 
-		$address = new Address;
-		$address->setName($values->name);
-		$address->setLastname($values->lastname);
-		$address->setStreet($values->street);
-		$address->setPostcode($values->postcode);
-		$address->setCity($values->city);
+		if ($this->getUser()->isLoggedIn()) {
 
-		$this->em->persist($address);
+			$address = new Address;
+			$address->setName($values->name);
+			$address->setLastname($values->lastname);
+			$address->setStreet($values->street);
+			$address->setPostcode($values->postcode);
+			$address->setCity($values->city);
 
-		$investment = new Investment;
-		$investment->setPhone($values->phone);
-		$investment->setEmail($values->email);
-		$investment->setInvestmentDate(new \Datetime(date('Y-m-d', strtotime($values->date))));
-		$investment->setInvestment($values->investmentAmount);
-		$investment->setInvestmentLength($values->investmentLength);
-		$investment->setRegistrationNumber($values->registrationNumber);
-		$investment->setCompany($values->company);
-		$investment->setAddress($address);
+			$this->em->persist($address);
 
-		$investment->setContractSend(false);
-		$investment->setContractPaid(false);
-		$investment->setContractClosed(false);
-		$investment->setClientContacted(false);
+			$investment = new Investment;
+			$investment->setPhone($values->phone);
+			$investment->setEmail($values->email);
+			$investment->setInvestmentDate(new \Datetime(date('Y-m-d', strtotime($values->date))));
+			$investment->setInvestment($values->investmentAmount);
+			$investment->setInvestmentLength($values->investmentLength);
+			$investment->setRegistrationNumber($values->registrationNumber);
+			$investment->setCompany($values->company);
+			$investment->setAddress($address);
 
-		if (!empty($values->bankAccountPrefix)) {
-			$bankAccount = str_replace('_', '', $values->bankAccountPrefix).'-'.str_replace('_', '', $values->bankAccount);
+			$investment->setContractSend(false);
+			$investment->setContractPaid(false);
+			$investment->setContractClosed(false);
+			$investment->setClientContacted(false);
+
+			if (!empty($values->bankAccountPrefix)) {
+				$bankAccount = str_replace('_', '', $values->bankAccountPrefix).'-'.str_replace('_', '', $values->bankAccount);
+			} else {
+				$bankAccount = str_replace('_', '', $values->bankAccount);
+			}
+			$investment->setBankAccount($bankAccount);
+
+			if (isset($this->businessmanSession->id)) {
+				$businessman = $this->em->getRepository('WebCMS\InvestformModule\Entity\Businessman')->find($this->businessmanSession->id);
+				$investment->setBusinessman($businessman);
+			}
+
+			$this->em->persist($investment);
+
+
+			$investment->getHash();
+			$this->em->flush();
+
+			$this->sendPdf($investment, 'form');
+
 		} else {
-			$bankAccount = str_replace('_', '', $values->bankAccount);
+			$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
+			if (!empty($infoEmail)) {
+
+				$mailBody = '<h3>Zájem o investici</h3>';
+				$mailBody .= '<hr><br />';
+				$mailBody .= '<h4>Kontaktní údaje</h4>';
+				$mailBody .= '<p>';
+				$mailBody .= $values->name.' '.$values->lastname.'<br />';
+				$mailBody .= $values->street.', '.$values->postcode.' '.$values->city.'<br />';
+				$mailBody .= $values->phone.', '.$values->email.'<br />';
+				$mailBody .= '</p><br />';
+				$mailBody .= '<h4>Zadaná investice - údaje</h4>';
+				$mailBody .= '<p>';
+				$mailBody .= $values->investmentAmount.'<br />';
+				$mailBody .= $values->investmentLength.'<br />';
+				$mailBody .= '</p>';
+
+				$mail = new Message;
+				$mail->setFrom($infoEmail)
+				    ->addTo($infoEmail)
+				    ->setSubject('Zájem o investici - '.$values->name.' '.$values->lastname)
+				    ->setHTMLBody($mailBody);
+
+				$mail->send();
+			}
 		}
-		$investment->setBankAccount($bankAccount);
 
-		if (isset($this->businessmanSession->id)) {
-			$businessman = $this->em->getRepository('WebCMS\InvestformModule\Entity\Businessman')->find($this->businessmanSession->id);
-			$investment->setBusinessman($businessman);
+		
+
+		if ($this->getUser()->isLoggedIn()) {
+
+			$this->redirect('default', array(
+				'path' => $this->actualPage->getPath(),
+				'abbr' => $this->abbr,
+				'parameters' => array(
+					'2',
+					'hash' => $investment->getHash()
+				)
+			));
+
+		} else {
+
+			$this->redirect('default', array(
+				'path' => $this->actualPage->getPath(),
+				'abbr' => $this->abbr,
+				'parameters' => array(
+					'2'
+				)
+			));
+
 		}
 
-		$this->em->persist($investment);
-		$this->em->flush();
-
-		$investment->getHash();
-		$this->em->flush();
-
-		$this->sendPdf($investment, 'form');
-
-		$infoEmail = $this->settings->get('Info email', \WebCMS\Settings::SECTION_BASIC, 'text')->getValue();
-		// if (!empty($infoEmail)) {
-		// 	$mail = new Message;
-		// 	$mail->setFrom($infoEmail)
-		// 	    ->addTo($infoEmail)
-		// 	    ->setSubject($this->settings->get('Notification subject', 'InvestformModule', 'text')->getValue())
-		// 	    ->setHTMLBody($this->settings->get('Notification body', 'InvestformModule', 'textarea')->getValue());
-
-		// 	$mail->send();
-		// }
-
-		$this->redirect('default', array(
-			'path' => $this->actualPage->getPath(),
-			'abbr' => $this->abbr,
-			'parameters' => array(
-				'2',
-				'hash' => $investment->getHash()
-			)
-		));
+		
 	}
 
 	public function step2formSubmitted($form)
