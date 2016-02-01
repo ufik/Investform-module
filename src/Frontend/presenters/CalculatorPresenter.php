@@ -47,6 +47,8 @@ class CalculatorPresenter extends BasePresenter
 		$form->addSelect('length', 'Length', array(3 => 'Tříletý', 5 => 'Pětiletý'));
 		$form->addText('date', 'Date')->setRequired('Date is mandatory.');
 
+		$form->addHidden('secured');
+
 		$form->addSubmit('calculate', 'Calculate');
 
 		$form->onSuccess[] = callback($this, 'formSubmitted');
@@ -59,9 +61,16 @@ class CalculatorPresenter extends BasePresenter
 		$values = $form->getValues();
 
 		$from = strtotime($values->date);
+		
 		if ($values->length == 5) {
-			$year = 2020;
-			$to = strtotime('2020-11-30');
+			if ($values->secured) {
+				$year = 2020;
+				$to = strtotime('2020-11-30');
+			} else {
+				$year = 2019;
+				$to = strtotime('2019-11-30');
+			}
+			
 		} else {
 			$year = 2017;
 			$to = strtotime('2017-10-30');
