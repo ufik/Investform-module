@@ -310,7 +310,7 @@ class InvestformPresenter extends BasePresenter
 				    ->setSubject('Zájem o investici - '.$values->name.' '.$values->lastname)
 				    ->setHTMLBody($mailBody);
 
-				// $mail->send();
+				$mail->send();
 			}
 		}
 
