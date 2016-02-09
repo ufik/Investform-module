@@ -318,7 +318,7 @@ class InvestformPresenter extends BasePresenter
         $investment = $this->em->getRepository('\WebCMS\InvestformModule\Entity\Investment')->find($id);
         $pdfPrinter = new PdfPrinter($investment);
 
-        $this->sendResponse($pdfPrinter->printPdfContract(true));
+        $this->sendResponse($pdfPrinter->printPdfContract(true, $investment->getInvestmentDate()));
     }
 
     public function actionContacted($id, $idPage)

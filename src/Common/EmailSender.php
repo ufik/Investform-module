@@ -37,7 +37,7 @@ class EmailSender
 			$pdfPrinter->printPdfForm();
 			$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . 'upload/contracts/' . $this->investment->getHash() . '.pdf'));
 		} else {
-			$pdfPrinter->printPdfContract();
+			$pdfPrinter->printPdfContract(false, $this->investment->getInvestmentDate());
 			$htmlBody = \WebCMS\Helpers\SystemHelper::replaceStatic($htmlBody, array('CONTRACT_PATH'), array(\WebCMS\Helpers\SystemHelper::$baseUrl . 'upload/contracts/' . $this->investment->getContractHash() . '.pdf'));
 		}
 
@@ -47,6 +47,6 @@ class EmailSender
 		    ->setSubject($this->settings->get(ucfirst($this->type).' Subject', 'InvestformModule', 'text')->getValue())
 		    ->setHTMLBody($htmlBody);
 
-		$mail->send();
+		// $mail->send();
 	}
 }
