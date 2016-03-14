@@ -211,6 +211,16 @@ class InvestformPresenter extends BasePresenter
         $this->investment->setInvestment($values->investment);
         $this->investment->setInvestmentLength($values->investmentLength);
 
+        if (!empty($values->pin)) {
+            //check if businessman exists
+            $businessman = $this->em->getRepository('WebCMS\InvestformModule\Entity\Businessman')->findOneBy(array(
+                'businessId' => $values->pin
+            ));
+            if ($businessman) {
+                $this->investment->setBusinessman($businessman);
+            }
+        }
+
         $address = $this->investment->getAddress();
         $address->setName($values->Address->name);
         $address->setLastname($values->Address->lastname);
