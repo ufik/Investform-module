@@ -392,11 +392,12 @@ class InvestformPresenter extends BasePresenter
 
 	public function handlegetNetIncome($amount, $length, $date)
 	{
+
 		$from = strtotime($date);
 		if ($length == 5) {
-			$to = strtotime('2019-10-30');
+			$to = strtotime('2020-11-30');
 		} else {
-			$to = strtotime('2017-10-30');
+			$to = strtotime('2019-11-30');
 		}
 
 		$length = ($to - $from) / 60 / 60 / 24 / 365;

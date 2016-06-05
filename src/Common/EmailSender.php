@@ -47,6 +47,6 @@ class EmailSender
 		    ->setSubject($this->settings->get(ucfirst($this->type).' Subject', 'InvestformModule', 'text')->getValue())
 		    ->setHTMLBody($htmlBody);
 
-		$mail->send();
+		// $mail->send();
 	}
 }
