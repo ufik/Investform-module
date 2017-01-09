@@ -53,18 +53,7 @@ class PdfPrinter
 		$fvoa = new FutureValueOfAnnuityCalculator($this->investment->getInvestment(), $this->investment->getRealInvestmentLength());
 
 		$oldcontract = '';
-		$paymentBankAccount = '2110773767/2700';
-		if ($investmentDate && $this->investment->getInvestmentLength() == 5) {
-			$investmentDt = $investmentDate;
-			$oldcontractDt = new \DateTime('2015-11-30');
-
-			if ($investmentDt < $oldcontractDt) {
-				$oldcontract = '_old';
-				$paymentBankAccount = '2110773767/2700';
-			} else {
-				$paymentBankAccount = '2112420631/2700';
-			}
-		}
+		$paymentBankAccount = '2113946299/2700';
 		
 		$templatePath = APP_DIR . "/../zajistenainvestice-smlouva_{$this->investment->getInvestmentLength()}lety-dluhopis{$oldcontract}.pdf";
 		$bNumber = $this->investment->getBirthdateNumber();
@@ -115,7 +104,7 @@ class PdfPrinter
 		    'bankAccountNumber' => $this->investment->getBankAccount(),
 		    'email' => $this->investment->getEmail(),
 		    'paymentAmount' => number_format($fvoa->getPurchaseAmount(), 0, ',', '.') . ',- Kč',
-		    'paymentBankAccount' => '2110773767/2700', // TODO move to settings
+		    'paymentBankAccount' => '2113946299/2700', // TODO move to settings
 		    'telephoneNumber' => $this->investment->getPhone(),
 		    'paymentVariableSymbol' => $id,
 			'amountOfBonds' => $this->investment->getInvestment() / 100000, // TODO move to settings
