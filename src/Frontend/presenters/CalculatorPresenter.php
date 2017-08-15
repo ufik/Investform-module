@@ -64,8 +64,8 @@ class CalculatorPresenter extends BasePresenter
 		
 		if ($values->length == 5) {
 			if ($values->secured) {
-				$year = 2021;
-				$to = strtotime('2021-12-12');
+				$year = 2022;
+				$to = strtotime('2022-07-24');
 			} else {
 				$year = 2019;
 				$to = strtotime('2019-11-30');
