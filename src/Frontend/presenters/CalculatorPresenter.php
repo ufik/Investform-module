@@ -26,7 +26,7 @@ class CalculatorPresenter extends BasePresenter
     {
 		parent::startup();
 
-		foreach(range(200000, 3000000, 100000) as $number) {
+		foreach(range(200000, 4000000, 100000) as $number) {
 			$amountItems[$number] = \WebCMS\Helpers\SystemHelper::price($number);
 		}
 
